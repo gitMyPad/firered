@@ -19,6 +19,7 @@
 #include "trainer_pokemon_sprites.h"
 #include "field_specials.h"
 #include "battle.h"
+#include "battle_ext.h"
 #include "battle_message.h"
 #include "battle_anim.h"
 #include "battle_ai_script_commands.h"
@@ -3164,6 +3165,9 @@ static void Cmd_getexp(void)
             }
 
             calculatedExp = gSpeciesInfo[gBattleMons[gBattlerFainted].species].expYield * gBattleMons[gBattlerFainted].level / 7;
+
+            // Apply Badge bonus.
+            calculatedExp = calculatedExp * GetBadgeExpMultiplier(GetBadgeCount()) / 100;
 
             if (viaExpShare) // at least one mon is getting exp via exp share
             {
