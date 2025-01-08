@@ -5567,7 +5567,8 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
             evIncrease *= 2;
 
         if (totalEVs + (s16)evIncrease > MAX_TOTAL_EVS)
-            evIncrease = ((s16)evIncrease + MAX_TOTAL_EVS) - (totalEVs + evIncrease);
+            evIncrease = (MAX_TOTAL_EVS) - (totalEVs);
+            // evIncrease = ((s16)evIncrease + MAX_TOTAL_EVS) - (totalEVs + evIncrease);
 
         if (evs[i] + (s16)evIncrease > MAX_PER_STAT_EVS)
         {
@@ -5576,8 +5577,8 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
             evIncrease = val1 - val2;
         }
 
-        evs[i] += evIncrease;
-        totalEVs += evIncrease;
+        evs[i]      += evIncrease;
+        totalEVs    += evIncrease;
         SetMonData(mon, MON_DATA_HP_EV + i, &evs[i]);
     }
 }
