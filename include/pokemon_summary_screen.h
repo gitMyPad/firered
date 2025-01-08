@@ -3,6 +3,10 @@
 
 #include "main.h"
 
+#define PSS_STAT_TYPE_NORMAL 0
+#define PSS_STAT_TYPE_EV 1
+#define PSS_STAT_TYPE_IV 2
+
 extern const u8 *const gMoveDescriptionPointers[];
 extern const u8 *const gNatureNamePointers[];
 

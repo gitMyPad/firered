@@ -73,6 +73,7 @@
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
+#define mod(a, b) (((a) % (b) < 0) ? ((a) % (b) + (b)) : ((a) % (b)))
 
 #if MODERN
 #define abs(x) (((x) < 0) ? -(x) : (x))

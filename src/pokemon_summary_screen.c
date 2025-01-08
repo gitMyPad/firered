@@ -241,7 +241,7 @@ struct PokemonSummaryScreenData
     struct Sprite *markingSprite;
 
     u8 ALIGNED(4) lastPageFlipDirection; /* 0x3300 */
-    u8 ALIGNED(4) unk3304; /* 0x3304 */
+    u8 ALIGNED(4) statDisplayType; /* 0x3304 */
 };
 
 struct Struct203B144
@@ -1044,6 +1044,7 @@ void ShowPokemonSummaryScreen(struct Pokemon * party, u8 cursorPos, u8 lastIdx, 
         sMonSummaryScreen->isEgg = TRUE;
 
     sMonSummaryScreen->lastPageFlipDirection = 0xff;
+    sMonSummaryScreen->statDisplayType = 0;
     SetMainCallback2(CB2_SetUpPSS);
 }
 
@@ -1081,7 +1082,8 @@ bool32 IsPageFlipInput(u8 direction)
         if (JOY_NEW(DPAD_RIGHT))
             return TRUE;
 
-        if (gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR && JOY_NEW(R_BUTTON))
+        if (gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR && JOY_NEW(R_BUTTON) &&     
+            (sMonSummaryScreen->curPageIndex != PSS_PAGE_SKILLS))
             return TRUE;
 
         break;
@@ -1089,7 +1091,8 @@ bool32 IsPageFlipInput(u8 direction)
         if (JOY_NEW(DPAD_LEFT))
             return TRUE;
 
-        if (gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR && JOY_NEW(L_BUTTON))
+        if (gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR && JOY_NEW(L_BUTTON) && 
+            (sMonSummaryScreen->curPageIndex != PSS_PAGE_SKILLS))
             return TRUE;
 
         break;
@@ -1195,6 +1198,17 @@ static void Task_InputHandler_Info(u8 taskId)
             else if (JOY_NEW(B_BUTTON))
             {
                 sMonSummaryScreen->state3270 = PSS_STATE3270_ATEXIT_FADEOUT;
+            }
+            else if (((JOY_NEW(L_BUTTON)) || (JOY_NEW(R_BUTTON))) &&
+                     (sMonSummaryScreen->curPageIndex == PSS_PAGE_SKILLS))
+            {
+                if ((JOY_NEW(L_BUTTON)))
+                    sMonSummaryScreen->statDisplayType  = mod(sMonSummaryScreen->statDisplayType--, 3);
+                else
+                    sMonSummaryScreen->statDisplayType  = mod(sMonSummaryScreen->statDisplayType++, 3);
+
+                PokeSum_SeekToNextMon(taskId, 1);
+                return;
             }
         }
         break;
@@ -2159,59 +2173,161 @@ static void BufferMonSkills(void)
     u32 exp;
     u32 expToNextLevel;
 
-    hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP);
-    ConvertIntToDecimalStringN(sMonSummaryScreen->summary.curHpStrBuf, hp, STR_CONV_MODE_LEFT_ALIGN, 3);
-    StringAppend(sMonSummaryScreen->summary.curHpStrBuf, gText_Slash);
+    if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+    {
+        hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP);
+        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.curHpStrBuf, hp, STR_CONV_MODE_LEFT_ALIGN, 3);
+        StringAppend(sMonSummaryScreen->summary.curHpStrBuf, gText_Slash);
 
-    hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_MAX_HP);
-    ConvertIntToDecimalStringN(tempStr, hp, STR_CONV_MODE_LEFT_ALIGN, 3);
-    StringAppend(sMonSummaryScreen->summary.curHpStrBuf, tempStr);
+        hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_MAX_HP);
+        ConvertIntToDecimalStringN(tempStr, hp, STR_CONV_MODE_LEFT_ALIGN, 3);
+        StringAppend(sMonSummaryScreen->summary.curHpStrBuf, tempStr);
 
-    sMonSkillsPrinterXpos->curHpStr = GetNumberRightAlign63(sMonSummaryScreen->summary.curHpStrBuf);
+        sMonSkillsPrinterXpos->curHpStr = GetNumberRightAlign63(sMonSummaryScreen->summary.curHpStrBuf);
+    }
+    else
+    {
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP_IV);
+
+        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.curHpStrBuf, hp, STR_CONV_MODE_LEFT_ALIGN, 3);
+    }
 
     if (sMonSummaryScreen->savedCallback == CB2_ReturnToTradeMenuFromSummary && sMonSummaryScreen->isEnemyParty == TRUE)
     {
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK2);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK2);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK2);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->atkStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF2);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF2);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF2);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->defStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK2);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK2);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK2);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->spAStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF2);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF2);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF2);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->spDStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED2);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED2);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED2);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->speStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE]);
     }
     else
     {
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->atkStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->defStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->spAStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->spDStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD]);
 
-        statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED);
+        if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_NORMAL)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_EV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED_EV);
+        else if (sMonSummaryScreen->statDisplayType == PSS_STAT_TYPE_IV)
+            statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED_IV);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED);
         ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
         sMonSkillsPrinterXpos->speStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE]);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK);
+        // ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
+        // sMonSkillsPrinterXpos->atkStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_ATK]);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF);
+        // ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
+        // sMonSkillsPrinterXpos->defStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_DEF]);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK);
+        // ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
+        // sMonSkillsPrinterXpos->spAStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPA]);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF);
+        // ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
+        // sMonSkillsPrinterXpos->spDStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPD]);
+
+        // statValue = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED);
+        // ConvertIntToDecimalStringN(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE], statValue, STR_CONV_MODE_LEFT_ALIGN, 3);
+        // sMonSkillsPrinterXpos->speStr = GetNumberRightAlign27(sMonSummaryScreen->summary.statValueStrBufs[PSS_STAT_SPE]);
     }
 
     exp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_EXP);
