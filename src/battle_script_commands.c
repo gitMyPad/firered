@@ -3167,7 +3167,7 @@ static void Cmd_getexp(void)
             calculatedExp = gSpeciesInfo[gBattleMons[gBattlerFainted].species].expYield * gBattleMons[gBattlerFainted].level / 7;
 
             // Apply Badge bonus.
-            calculatedExp = calculatedExp * GetBadgeExpMultiplier(GetBadgeCount()) / 100;
+            calculatedExp = calculatedExp * GET_BADGE_EXP_MULT(GetBadgeCount()) / 100;
 
             if (viaExpShare) // at least one mon is getting exp via exp share
             {

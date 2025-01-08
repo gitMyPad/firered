@@ -14,7 +14,7 @@ u8 GetBadgeCount(void)
     return count;
 }
 
-u16 GetBadgeExpMultiplier(u8 badgeCount)
-{
-    return 100 + 25*badgeCount;
-}
+// u16 GetBadgeExpMultiplier(u8 badgeCount)
+// {
+//     return 100 + 25*badgeCount;
+// }
