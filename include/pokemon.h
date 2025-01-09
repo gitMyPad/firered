@@ -424,5 +424,10 @@ bool8 CheckBattleTypeGhost(struct Pokemon *mon, u8 bank);
 struct MonSpritesGfxManager *CreateMonSpritesGfxManager(u8 battlePosition, u8 mode);
 void DestroyMonSpritesGfxManager(void);
 u8 *MonSpritesGfxManager_GetSpritePtr(u8 bufferId);
+s8 GetNatureStatType(u8 nature, u8 statIndex);
+
+#define NATURE_STAT_MINUS 0
+#define NATURE_STAT_NORMAL 1
+#define NATURE_STAT_PLUS 2
 
 #endif // GUARD_POKEMON_H

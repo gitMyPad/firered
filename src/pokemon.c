@@ -5425,6 +5425,25 @@ static u16 ModifyStatByNature(u8 nature, u16 stat, u8 statIndex)
     return retVal;
 }
 
+s8 GetNatureStatType(u8 nature, u8 statIndex)
+{
+    if (statIndex <= STAT_HP || statIndex > NUM_NATURE_STATS)
+        return NATURE_STAT_NORMAL;
+
+    // This defaults to the code below.
+    return sNatureStatTable[nature][statIndex - 1] + 1;
+
+    // switch (sNatureStatTable[nature][statIndex - 1])
+    // {
+    // case 1:
+    //     return NATURE_STAT_PLUS
+    // case -1:
+    //     return NATURE_STAT_MINUS
+    // default:
+    //     return NATURE_STAT_NORMAL
+    // }
+}
+
 void AdjustFriendship(struct Pokemon *mon, u8 event)
 {
     u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, NULL);
@@ -5567,7 +5586,8 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
             evIncrease *= 2;
 
         if (totalEVs + (s16)evIncrease > MAX_TOTAL_EVS)
-            evIncrease = ((s16)evIncrease + MAX_TOTAL_EVS) - (totalEVs + evIncrease);
+            evIncrease = (MAX_TOTAL_EVS) - (totalEVs);
+            // evIncrease = ((s16)evIncrease + MAX_TOTAL_EVS) - (totalEVs + evIncrease);
 
         if (evs[i] + (s16)evIncrease > MAX_PER_STAT_EVS)
         {
@@ -5576,8 +5596,8 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
             evIncrease = val1 - val2;
         }
 
-        evs[i] += evIncrease;
-        totalEVs += evIncrease;
+        evs[i]      += evIncrease;
+        totalEVs    += evIncrease;
         SetMonData(mon, MON_DATA_HP_EV + i, &evs[i]);
     }
 }

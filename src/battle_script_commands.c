@@ -19,6 +19,7 @@
 #include "trainer_pokemon_sprites.h"
 #include "field_specials.h"
 #include "battle.h"
+#include "battle_ext.h"
 #include "battle_message.h"
 #include "battle_anim.h"
 #include "battle_ai_script_commands.h"
@@ -1661,6 +1662,7 @@ static void Cmd_adjustnormaldamage2(void)
 
 static void Cmd_attackanimation(void)
 {
+    u8 i = 0;
     if (gBattleControllerExecFlags)
         return;
 
@@ -1690,6 +1692,8 @@ static void Cmd_attackanimation(void)
             gBattleScripting.animTargetsHit++;
             MarkBattlerForControllerExec(gBattlerAttacker);
             gBattlescriptCurrInstr++;
+            for (i = 0; i < gBattlersCount; i++)
+                SetHealthboxSpriteInvisible(gHealthboxSpriteIds[i]);
         }
         else
         {
@@ -1701,14 +1705,20 @@ static void Cmd_attackanimation(void)
 
 static void Cmd_waitanimation(void)
 {
+    u8 i = 0;
     if (gBattleControllerExecFlags == 0)
+    {
+        for (i = 0; i < gBattlersCount; i++)
+            SetHealthboxSpriteVisible(gHealthboxSpriteIds[i]);
         gBattlescriptCurrInstr++;
+    }
 }
 
 static void Cmd_healthbarupdate(void)
 {
     if (gBattleControllerExecFlags)
         return;
+
 
     if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
     {
@@ -3165,6 +3175,9 @@ static void Cmd_getexp(void)
 
             calculatedExp = gSpeciesInfo[gBattleMons[gBattlerFainted].species].expYield * gBattleMons[gBattlerFainted].level / 7;
 
+            // Apply Badge bonus.
+            calculatedExp = calculatedExp * GET_BADGE_EXP_MULT(GetBadgeCount()) / 100;
+
             if (viaExpShare) // at least one mon is getting exp via exp share
             {
                 *exp = SAFE_DIV(calculatedExp / 2, viaSentIn);
@@ -3279,7 +3292,10 @@ static void Cmd_getexp(void)
         if (gBattleControllerExecFlags == 0)
         {
             gBattleBufferB[gBattleStruct->expGetterBattlerId][0] = 0;
-            if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP) && GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) != MAX_LEVEL)
+            
+            // Remove this check from the condition below.
+            // GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) != MAX_LEVEL
+            if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP))
             {
                 gBattleResources->beforeLvlUp->stats[STAT_HP]    = GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_MAX_HP);
                 gBattleResources->beforeLvlUp->stats[STAT_ATK]   = GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_ATK);
