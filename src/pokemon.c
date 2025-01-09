@@ -5425,6 +5425,25 @@ static u16 ModifyStatByNature(u8 nature, u16 stat, u8 statIndex)
     return retVal;
 }
 
+s8 GetNatureStatType(u8 nature, u8 statIndex)
+{
+    if (statIndex <= STAT_HP || statIndex > NUM_NATURE_STATS)
+        return NATURE_STAT_NORMAL;
+
+    // This defaults to the code below.
+    return sNatureStatTable[nature][statIndex - 1] + 1;
+
+    // switch (sNatureStatTable[nature][statIndex - 1])
+    // {
+    // case 1:
+    //     return NATURE_STAT_PLUS
+    // case -1:
+    //     return NATURE_STAT_MINUS
+    // default:
+    //     return NATURE_STAT_NORMAL
+    // }
+}
+
 void AdjustFriendship(struct Pokemon *mon, u8 event)
 {
     u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, NULL);
