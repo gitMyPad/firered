@@ -3099,6 +3099,8 @@ static void PokeSum_PrintAbilityNameAndDesc(void)
 static void PokeSum_DrawMoveTypeIcons(void)
 {
     u8 i;
+    u8 moveType;
+    u32 species;
 
     FillWindowPixelBuffer(sMonSummaryScreen->windowIds[5], 0);
 
@@ -3107,11 +3109,39 @@ static void PokeSum_DrawMoveTypeIcons(void)
         if (sMonSummaryScreen->moveIds[i] == MOVE_NONE)
             continue;
 
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], sMonSummaryScreen->moveTypes[i] + 1, 3, GetMoveNamePrinterYpos(i));
+        switch (sMonSummaryScreen->moveIds[i])
+        {
+        case MOVE_RETURN:
+        case MOVE_FRUSTRATION:
+            species     = GetMonData(sMonSummaryScreen->currentMon, MON_DATA_SPECIES, NULL);
+            moveType    = gSpeciesInfo[species].types[0];
+            break;
+        default:
+            moveType    = sMonSummaryScreen->moveTypes[i];
+            break;
+        }
+        moveType++;
+
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], moveType, 3, GetMoveNamePrinterYpos(i));
     }
 
     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
-        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], sMonSummaryScreen->moveTypes[4] + 1, 3, GetMoveNamePrinterYpos(4));
+    {
+        switch (sMonSummaryScreen->moveIds[4])
+        {
+        case MOVE_RETURN:
+        case MOVE_FRUSTRATION:
+            species     = GetMonData(sMonSummaryScreen->currentMon, MON_DATA_SPECIES, NULL);
+            moveType    = gSpeciesInfo[species].types[0];
+            break;
+        default:
+            moveType    = sMonSummaryScreen->moveTypes[i];
+            break;
+        }
+        moveType++;
+
+        BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], moveType, 3, GetMoveNamePrinterYpos(4));
+    }
 }
 
 static void PokeSum_PrintPageHeaderText(u8 curPageIndex)

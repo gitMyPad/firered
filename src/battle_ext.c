@@ -290,11 +290,15 @@ void BattleExtension_TypeCalc(u16 *move, u8 *attacker, u8 *target)
     // Fetch move type.
     GET_MOVE_TYPE(*move, moveType);
 
+    if ((*move) == MOVE_RETURN || (*move) == MOVE_FRUSTRATION)
+    {
+        moveType    = gBattleMons[*attacker].type1;
+    }
+    
     // check stab
     if (IS_BATTLER_OF_TYPE(*attacker, moveType))
     {
-        gBattleMoveDamage = gBattleMoveDamage * 15;
-        gBattleMoveDamage = gBattleMoveDamage / 10;
+        gBattleMoveDamage = (gBattleMoveDamage * 15) / 10;
     }
 
     if ((gBattleMons[*target].ability == ABILITY_LEVITATE) && 
