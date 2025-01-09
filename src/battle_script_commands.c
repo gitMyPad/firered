@@ -1662,8 +1662,12 @@ static void Cmd_adjustnormaldamage2(void)
 
 static void Cmd_attackanimation(void)
 {
+    u8 i = 0;
     if (gBattleControllerExecFlags)
         return;
+
+    for (i = 0; i < gBattlersCount; i++)
+        SetHealthboxSpriteInvisible(gHealthboxSpriteIds[i]);
 
     if ((gHitMarker & HITMARKER_NO_ANIMATIONS) && (gCurrentMove != MOVE_TRANSFORM && gCurrentMove != MOVE_SUBSTITUTE))
     {
@@ -1702,14 +1706,20 @@ static void Cmd_attackanimation(void)
 
 static void Cmd_waitanimation(void)
 {
+    u8 i = 0;
     if (gBattleControllerExecFlags == 0)
+    {
+        for (i = 0; i < gBattlersCount; i++)
+            SetHealthboxSpriteVisible(gHealthboxSpriteIds[i]);
         gBattlescriptCurrInstr++;
+    }
 }
 
 static void Cmd_healthbarupdate(void)
 {
     if (gBattleControllerExecFlags)
         return;
+
 
     if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
     {
