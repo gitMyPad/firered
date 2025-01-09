@@ -1666,9 +1666,6 @@ static void Cmd_attackanimation(void)
     if (gBattleControllerExecFlags)
         return;
 
-    for (i = 0; i < gBattlersCount; i++)
-        SetHealthboxSpriteInvisible(gHealthboxSpriteIds[i]);
-
     if ((gHitMarker & HITMARKER_NO_ANIMATIONS) && (gCurrentMove != MOVE_TRANSFORM && gCurrentMove != MOVE_SUBSTITUTE))
     {
         BattleScriptPush(gBattlescriptCurrInstr + 1);
@@ -1695,6 +1692,8 @@ static void Cmd_attackanimation(void)
             gBattleScripting.animTargetsHit++;
             MarkBattlerForControllerExec(gBattlerAttacker);
             gBattlescriptCurrInstr++;
+            for (i = 0; i < gBattlersCount; i++)
+                SetHealthboxSpriteInvisible(gHealthboxSpriteIds[i]);
         }
         else
         {
