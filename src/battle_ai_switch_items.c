@@ -4,6 +4,7 @@
 #include "battle_controllers.h"
 #include "random.h"
 #include "util.h"
+#include "battle_ext.h"
 #include "constants/abilities.h"
 #include "constants/item_effects.h"
 #include "constants/items.h"
@@ -403,25 +404,36 @@ void AI_TrySwitchOrUseItem(void)
 
 static void ModulateByTypeEffectiveness(u8 atkType, u8 defType1, u8 defType2, u8 *var)
 {
-    s32 i = 0;
+    s32 i           = 0;
+    u8 effectCount  = 3;
 
-    while (TYPE_EFFECT_ATK_TYPE(i) != TYPE_ENDTABLE)
+    GetTypeEffectivenessByType(&effectCount, atkType, defType1);
+    if (defType2 == defType1)
+        goto modulate_var;
+
+    GetTypeEffectivenessByType(&effectCount, atkType, defType2);
+    
+modulate_var:
+    while (TRUE)
     {
-        if (TYPE_EFFECT_ATK_TYPE(i) == TYPE_FORESIGHT)
+        if (effectCount == 0)
         {
-            i += 3;
-            continue;
+            *var = 0;
+            break;
         }
-        else if (TYPE_EFFECT_ATK_TYPE(i) == atkType)
+        if (effectCount == 3)
+            break;
+
+        if (effectCount < 3)
         {
-            // Check type1.
-            if (TYPE_EFFECT_DEF_TYPE(i) == defType1)
-                *var = (*var * TYPE_EFFECT_MULTIPLIER(i)) / 10;
-            // Check type2.
-            if (TYPE_EFFECT_DEF_TYPE(i) == defType2 && defType1 != defType2)
-                *var = (*var * TYPE_EFFECT_MULTIPLIER(i)) / 10;
+            *var = (*var * TYPE_MUL_NOT_EFFECTIVE) / 10;
+            effectCount++;
         }
-        i += 3;
+        else
+        {
+            *var = (*var * TYPE_MUL_SUPER_EFFECTIVE) / 10;
+            effectCount--;
+        }
     }
 }
 
