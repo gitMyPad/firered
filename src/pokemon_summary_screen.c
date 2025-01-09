@@ -34,6 +34,7 @@
 #include "mon_markings.h"
 #include "pokemon_storage_system.h"
 #include "constants/sound.h"
+#include "battle_ext.h"
 
 // needs conflicting header to match (curIndex is s8 in the function, but has to be defined as u8 here)
 extern s16 SeekToNextMonInBox(struct BoxPokemon * boxMons, u8 curIndex, u8 maxIndex, u8 flags);
@@ -2385,6 +2386,10 @@ static void BufferMonMoves(void)
 
 static void BufferMonMoveI(u8 i)
 {
+    u16 power;
+    u16 species;
+    u8 moveType;
+
     if (i < 4)
         sMonSummaryScreen->moveIds[i] = GetMonMoveBySlotId(&sMonSummaryScreen->currentMon, i);
 
@@ -2401,6 +2406,17 @@ static void BufferMonMoveI(u8 i)
 
     sMonSummaryScreen->numMoves++;
     sMonSummaryScreen->moveTypes[i] = gBattleMoves[sMonSummaryScreen->moveIds[i]].type;
+
+    switch (sMonSummaryScreen->moveIds[i])
+    {
+    case MOVE_RETURN:
+    case MOVE_FRUSTRATION:
+        species                             = GetMonData(&sMonSummaryScreen->currentMon,
+                                                         MON_DATA_SPECIES, NULL);
+        sMonSummaryScreen->moveTypes[i]     = gSpeciesInfo[species].types[0];
+        break;
+    }
+        
     StringCopy(sMonSummaryScreen->summary.moveNameStrBufs[i], gMoveNames[sMonSummaryScreen->moveIds[i]]);
 
     if (i >= 4 && sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
@@ -2422,11 +2438,18 @@ static void BufferMonMoveI(u8 i)
     sMonSkillsPrinterXpos->curPp[i] = GetRightAlignXpos_NDigits(2, sMonSummaryScreen->summary.moveCurPpStrBufs[i]);
     sMonSkillsPrinterXpos->maxPp[i] = GetRightAlignXpos_NDigits(2, sMonSummaryScreen->summary.moveMaxPpStrBufs[i]);
 
-    if (gBattleMoves[sMonSummaryScreen->moveIds[i]].power <= 1)
-        StringCopy(sMonSummaryScreen->summary.movePowerStrBufs[i], gText_ThreeHyphens);
-    else
-        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.movePowerStrBufs[i], gBattleMoves[sMonSummaryScreen->moveIds[i]].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    if ((sMonSummaryScreen->moveIds[i] == MOVE_RETURN) || 
+        (sMonSummaryScreen->moveIds[i] == MOVE_FRUSTRATION))
+    {
+        BattleExtension_CalcFriendshipDmgMon(&(sMonSummaryScreen->moveIds[i]), &power, &(sMonSummaryScreen->currentMon));
 
+        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.movePowerStrBufs[i], power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    }
+    else if (gBattleMoves[sMonSummaryScreen->moveIds[i]].power > 1)
+        ConvertIntToDecimalStringN(sMonSummaryScreen->summary.movePowerStrBufs[i], gBattleMoves[sMonSummaryScreen->moveIds[i]].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    else
+        StringCopy(sMonSummaryScreen->summary.movePowerStrBufs[i], gText_ThreeHyphens);
+        
     if (gBattleMoves[sMonSummaryScreen->moveIds[i]].accuracy == 0)
         StringCopy(sMonSummaryScreen->summary.moveAccuracyStrBufs[i], gText_ThreeHyphens);
     else
@@ -3109,17 +3132,7 @@ static void PokeSum_DrawMoveTypeIcons(void)
         if (sMonSummaryScreen->moveIds[i] == MOVE_NONE)
             continue;
 
-        switch (sMonSummaryScreen->moveIds[i])
-        {
-        case MOVE_RETURN:
-        case MOVE_FRUSTRATION:
-            species     = GetMonData(sMonSummaryScreen->currentMon, MON_DATA_SPECIES, NULL);
-            moveType    = gSpeciesInfo[species].types[0];
-            break;
-        default:
-            moveType    = sMonSummaryScreen->moveTypes[i];
-            break;
-        }
+        moveType    = sMonSummaryScreen->moveTypes[i];
         moveType++;
 
         BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], moveType, 3, GetMoveNamePrinterYpos(i));
@@ -3127,17 +3140,7 @@ static void PokeSum_DrawMoveTypeIcons(void)
 
     if (sMonSummaryScreen->mode == PSS_MODE_SELECT_MOVE)
     {
-        switch (sMonSummaryScreen->moveIds[4])
-        {
-        case MOVE_RETURN:
-        case MOVE_FRUSTRATION:
-            species     = GetMonData(sMonSummaryScreen->currentMon, MON_DATA_SPECIES, NULL);
-            moveType    = gSpeciesInfo[species].types[0];
-            break;
-        default:
-            moveType    = sMonSummaryScreen->moveTypes[i];
-            break;
-        }
+        moveType    = sMonSummaryScreen->moveTypes[i];
         moveType++;
 
         BlitMenuInfoIcon(sMonSummaryScreen->windowIds[5], moveType, 3, GetMoveNamePrinterYpos(4));

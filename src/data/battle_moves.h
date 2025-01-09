@@ -3027,7 +3027,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
     [MOVE_RETURN] =
     {
         .effect = EFFECT_RETURN,
-        .power = 1,
+        .power = 10,
         .type = TYPE_MYSTERY,
         .accuracy = 100,
         .pp = 20,
@@ -3055,7 +3055,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
     [MOVE_FRUSTRATION] =
     {
         .effect = EFFECT_FRUSTRATION,
-        .power = 1,
+        .power = 10,
         .type = TYPE_MYSTERY,
         .accuracy = 100,
         .pp = 20,

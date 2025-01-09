@@ -373,3 +373,31 @@ finalize_flags:
     if (gMoveResultFlags & MOVE_RESULT_DOESNT_AFFECT_FOE)
         gProtectStructs[*attacker].targetNotAffected = 1;
 }
+
+// ===============================
+//      Friendship damage
+//      calculation
+// ===============================
+
+static void BattleExtension_CalcFriendshipDmg2(u16 *move, u16 *power, u8 friendship)
+{
+    // Avoid memory assignment in this region.
+    if (power == NULL)
+        return;
+
+    if (gBattleMoves[(*move)].effect == EFFECT_RETURN)
+        (*power) = gBattleMoves[(*move)].power * (friendship) / 25;
+    else if (gBattleMoves[(*move)].effect == EFFECT_FRUSTRATION)// EFFECT_FRUSTRATION
+        (*power) = gBattleMoves[(*move)].power * (255 - friendship) / 25;
+}
+
+void BattleExtension_CalcFriendshipDmg(u16 *move, u16 *power, u8 *attacker)
+{
+    BattleExtension_CalcFriendshipDmg2(move, power, gBattleMons[(*attacker)].friendship);
+}
+
+void BattleExtension_CalcFriendshipDmgMon(u16 *move, u16 *power, struct Pokemon *mon)
+{
+    u8 friendship   = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
+    BattleExtension_CalcFriendshipDmg2(move, power, friendship);
+}
