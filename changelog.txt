@@ -1,0 +1,12 @@
+1.0.0 Changelog:
+- Hide healthbars while playing a move animation.
+- Improve HP drain speed for higher HP mons in battle
+- Add color (red = plus, blue = minus) to stats of Pokemon based on their nature.
+- Show Pokemon's EV and IV stats in summary
+- Add ability to view IVs and EVs
+- Modify running behavior to allow running before Running Shoes are given.
+- Allow max level mons to gain EVs.
+- Optimize computation of EV increment
+- Update Max EV stats and total EVs
+- Add badge exp modifier
+- Update name field in DungeonMapInfo to allow compilation.
