@@ -319,16 +319,46 @@ void BattleExtension_TypeCalc(u16 *move, u8 *attacker, u8 *target)
 
     GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[*target].type2);
 
-    // Check for Foresight.
+    // ==================================
+    //        Check for Foresight.
+    // ==================================
     if ((gBattleMons[*target].status2 & STATUS2_FORESIGHT) && 
         (effectCount < 1))
     {
         if (((moveType == TYPE_NORMAL) || (moveType == TYPE_FIGHTING)) &&
             (((gBattleMons[*target].type1 == TYPE_GHOST)) ||
-            ((gBattleMons[*target].type2 == TYPE_GHOST))))
+             ((gBattleMons[*target].type2 == TYPE_GHOST))))
             effectCount = 3;
+        else
+            goto touch_grass;
+
+        if ((gBattleMons[*target].type1 == TYPE_GHOST) && (gBattleMons[*target].type2 != gBattleMons[*target].type1))
+            GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[*target].type2);
+
+        else if ((gBattleMons[*target].type2 == TYPE_GHOST) && (gBattleMons[*target].type1 != gBattleMons[*target].type2))
+            GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[*target].type1);
+    }
+
+// Just a quirky jump here.
+touch_grass:
+    // Check for Soft Shell (and block it if Mold Breaker is ever implemented).
+    if (gBattleMons[*target].ability == ABILITY_SOFT_SHELL)
+    {
+        switch (moveType)
+        {
+            case TYPE_FIGHTING:
+            case TYPE_GROUND:
+                effectCount--;
+                break;
+        }
     }
     
+    // Check if the move is a status move before writing the flags.
+    if (((gBattleMoves[*move].targetFlags & MOVETARGET_MASK) == 
+          MOVETARGET_FLAG_STATUS) && 
+          ((effectCount != 3) && (effectCount != 0)))
+        effectCount = 3;
+        
     // Types determined. Write flags.
 finalize_flags:
     while (TRUE)
