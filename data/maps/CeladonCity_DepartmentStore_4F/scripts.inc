@@ -35,3 +35,30 @@ CeladonCity_DepartmentStore_4F_Items::
 	.2byte ITEM_NONE
 	release
 	end
+
+CeladonCity_DepartmentStore_4F_EventScript_BattleClerk:
+	goto_if_questlog EventScript_ReleaseEnd
+	lock
+	faceplayer
+	message Text_MayIHelpYou
+	waitmessage
+	pokemart CeladonCity_DepartmentStore_4F_BattleItems
+	msgbox Text_PleaseComeAgain
+	release
+	end
+
+	.align 2
+CeladonCity_DepartmentStore_4F_BattleItems::
+	.2byte ITEM_CHOICE_BAND
+	.2byte ITEM_CHOICE_SPECS
+	.2byte ITEM_CHERI_BERRY
+	.2byte ITEM_CHESTO_BERRY
+	.2byte ITEM_PECHA_BERRY
+	.2byte ITEM_RAWST_BERRY
+	.2byte ITEM_ASPEAR_BERRY
+	.2byte ITEM_PP_UP
+	.2byte ITEM_PP_MAX
+	.2byte ITEM_SITRUS_BERRY
+	.2byte ITEM_LEPPA_BERRY
+	release
+	end

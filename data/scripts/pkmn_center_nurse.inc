@@ -1,12 +1,6 @@
 EventScript_PkmnCenterNurse::
 	goto_if_questlog EventScript_ReleaseEnd
-	message Text_WelcomeWantToHealPkmn
-	waitmessage
-	multichoice 19, 8, MULTICHOICE_YES_NO, FALSE | (TRUE << 1)
-	switch VAR_RESULT
-	case 0, EventScript_PkmnCenterNurse_HealPkmn
-	case 1 EventScript_PkmnCenterNurse_Goodbye
-	case SCR_MENU_CANCEL, EventScript_PkmnCenterNurse_Goodbye
+	goto EventScript_PkmnCenterNurse_HealPkmn
 	end
 
 EventScript_PkmnCenterNurse_HealPkmn::
@@ -14,7 +8,6 @@ EventScript_PkmnCenterNurse_HealPkmn::
 	message Text_TakeYourPkmnForFewSeconds
 	waitmessage
 	call EventScript_PkmnCenterNurse_TakeAndHealPkmn
-	special SetUsedPkmnCenterQuestLogEvent
 	goto EventScript_PkmnCenterNurse_CheckTrainerTowerAndUnionRoom
 	end
 
@@ -43,6 +36,8 @@ EventScript_PkmnCenterNurse_ReturnPkmn::
 	applymovement VAR_LAST_TALKED, Movement_Bow
 	waitmovement 0
 	msgbox Text_WeHopeToSeeYouAgain
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
 	return
 
 EventScript_PkmnCenterNurse_PlayerWaitingInUnionRoom::

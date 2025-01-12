@@ -22855,6 +22855,71 @@
         {
           "map": "MAP_CELADON_CITY",
           "base_label": "sCeladonCity_FireRed",
+          "land_mons": {
+            "encounter_rate": 21,
+            "mons": [
+              {
+                "min_level": 18,
+                "max_level": 20,
+                "species": "SPECIES_WINGULL"
+              },
+              {
+                "min_level": 24,
+                "max_level": 25,
+                "species": "SPECIES_SENTRET"
+              },
+              {
+                "min_level": 16,
+                "max_level": 18,
+                "species": "SPECIES_VULPIX"
+              },
+              {
+                "min_level": 15,
+                "max_level": 16,
+                "species": "SPECIES_VULPIX"
+              },
+              {
+                "min_level": 18,
+                "max_level": 18,
+                "species": "SPECIES_BELLSPROUT"
+              },
+              {
+                "min_level": 19,
+                "max_level": 20,
+                "species": "SPECIES_BELLSPROUT"
+              },
+              {
+                "min_level": 24,
+                "max_level": 26,
+                "species": "SPECIES_ILLUMISE"
+              },
+              {
+                "min_level": 25,
+                "max_level": 26,
+                "species": "SPECIES_VOLBEAT"
+              },
+              {
+                "min_level": 23,
+                "max_level": 25,
+                "species": "SPECIES_ZIGZAGOON"
+              },
+              {
+                "min_level": 23,
+                "max_level": 25,
+                "species": "SPECIES_ZIGZAGOON"
+              },
+              {
+                "min_level": 24,
+                "max_level": 26,
+                "species": "SPECIES_ZIGZAGOON"
+              },
+              {
+                "min_level": 31,
+                "max_level": 32,
+                "species": "SPECIES_LINOONE"
+              }
+            ]
+          },
           "water_mons": {
             "encounter_rate": 1,
             "mons": [
