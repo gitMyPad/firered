@@ -2483,7 +2483,12 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
 
     // Apply boosts from hold items
     if (attackerHoldEffect == HOLD_EFFECT_CHOICE_BAND)
-        srcAtk = (150 * srcAtk) / 100;
+    {
+        if (attacker->item == ITEM_CHOICE_BAND)
+            srcAtk = (150 * srcAtk) / 100;
+        else if (attacker->item == ITEM_CHOICE_SPECS)
+            srcSpatk = (150 * srcSpatk) / 100;
+    }
 
     if (attackerHoldEffect == HOLD_EFFECT_SOUL_DEW && 
         !(gBattleTypeFlags & (BATTLE_TYPE_BATTLE_TOWER)) && 
