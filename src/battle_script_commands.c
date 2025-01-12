@@ -1366,7 +1366,8 @@ u8 TypeCalc(u16 move, u8 attacker, u8 defender)
         break;
     }
 
-    if (gBattleMons[defender].ability == ABILITY_LEVITATE && moveType == TYPE_GROUND)
+    if (gBattleMons[defender].ability == ABILITY_LEVITATE &&
+        moveType == TYPE_GROUND)
     {
         effectCount = 0;
         flags      |= (MOVE_RESULT_MISSED | MOVE_RESULT_DOESNT_AFFECT_FOE);

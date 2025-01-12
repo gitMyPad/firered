@@ -2962,7 +2962,9 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
 
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 {
-    u8 i, j;
+    u8 i, j, m;
+    u8 k = 0;
+    u16 *flaggedFieldMoves  = NULL;
 
     sPartyMenuInternal->numActions = 0;
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_SUMMARY);
@@ -2971,12 +2973,35 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     {
         for (j = 0; sFieldMoves[j] != FIELD_MOVE_END; ++j)
         {
-            if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j])
+            //  Check the list of flagged field moves.
+            if (flaggedFieldMoves != NULL)
+            {
+                for (m = 0;  m < k; m++)
+                {
+                    //  This field move (actually index) is flagged
+                    //  as duplicate.
+                    if (flaggedFieldMoves[m] == j)
+                        break;
+                }
+                if (m < k)
+                    goto skip_append;
+            }
+            if ((GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j]) || 
+                (CanMonUseFieldMove(&mons[slotId], sFieldMoves[j])))
             {
                 AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + CURSOR_OPTION_FIELD_MOVES);
                 break;
             }
+        skip_append:
+            continue;
         }
+        if (j >= FIELD_MOVE_END)
+            continue;
+
+        if (flaggedFieldMoves == NULL)
+            flaggedFieldMoves   = Alloc(13);
+
+        flaggedFieldMoves[k++]  = j;
     }
     if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_SWITCH);
@@ -2985,6 +3010,10 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     else
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_ITEM);
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_CANCEL1);
+
+    // Free the memory allocated.
+    if (flaggedFieldMoves != NULL)
+        Free(flaggedFieldMoves);
 }
 
 static u8 GetPartyMenuActionsType(struct Pokemon *mon)
@@ -4741,6 +4770,50 @@ bool8 MonKnowsMove(struct Pokemon *mon, u16 move)
             return TRUE;
     }
     return FALSE;
+}
+
+bool8 CanMonUseFieldMove(struct Pokemon *mon, u16 move)
+{
+    u16 itemId  = ITEM_NONE;
+    if (MonKnowsMove(mon, move) == TRUE)
+        return TRUE;
+
+    // Check if the Pokemon can learn the
+    // move through HMs
+    switch (move)
+    {
+    case MOVE_CUT:
+        itemId  = ITEM_HM01_CUT;
+        break;
+    case MOVE_FLY:
+        itemId  = ITEM_HM02_FLY;
+        break;
+    case MOVE_SURF:
+        itemId  = ITEM_HM03_SURF;
+        break;
+    case MOVE_STRENGTH:
+        itemId  = ITEM_HM04_STRENGTH;
+        break;
+    case MOVE_FLASH:
+        itemId  = ITEM_HM05_FLASH;
+        break;
+    case MOVE_ROCK_SMASH:
+        itemId  = ITEM_HM06_ROCK_SMASH;
+        break;
+    case MOVE_WATERFALL:
+        itemId  = ITEM_HM07_WATERFALL;
+        break;
+    case MOVE_DIVE:
+        itemId  = ITEM_HM08_DIVE;
+        break;    
+    }
+
+    if (itemId == ITEM_NONE)
+        return FALSE;
+
+    return ((BagGetQuantityByItemId(itemId) > 0) && 
+            (CanMonLearnTMHM(mon, itemId - ITEM_TM01_FOCUS_PUNCH) != 0))?
+            TRUE : FALSE;
 }
 
 static void DisplayLearnMoveMessage(const u8 *str)
