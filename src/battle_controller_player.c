@@ -1402,6 +1402,8 @@ static void MoveSelectionDisplayPpNumber(void)
 static void MoveSelectionDisplayMoveType(void)
 {
     u8 *txtPtr;
+    u8 moveType;
+
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
 
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
@@ -1409,7 +1411,19 @@ static void MoveSelectionDisplayMoveType(void)
     *txtPtr++ = 6;
     *txtPtr++ = 1;
     txtPtr = StringCopy(txtPtr, gText_MoveInterfaceDynamicColors);
-    StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
+    
+    switch (moveInfo->moves[gMoveSelectionCursor[gActiveBattler]])
+    {
+    case MOVE_RETURN:
+    case MOVE_FRUSTRATION:
+        moveType    = gBattleMons[gActiveBattler].type1;
+        break;
+    default:
+        moveType    = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+        break;
+    }
+
+    StringCopy(txtPtr, gTypeNames[moveType]);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 }
 

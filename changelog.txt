@@ -1,4 +1,99 @@
-1.0.0 Changelog:
+1.1.0:
+- Display stat used by the attacking move for the calculation of damage.
+- Add icons for physical/special split indication.
+  Image source: Jaizu    
+  Link: https://github.com/Jaizu/pokeemerald-public/commit/7eafd6e150ddfc91b2ea2cb52a18b5141a61d46e
+  Commit: 7eafd6e
+- Adjust wild pokemon spawns and gym leader parties.
+    - Viridian Forest:
+        - Add Chikorita, Cyndaquil and Totodile to the list of encounters.
+    - Route 4:
+        - Add Taillow, Zangoose and Seviper.
+    - Route 22:
+        - Random pokemon encounters consist of the following:
+            - Mankey
+            - Ekans
+            - Marill
+        - Add Marill as a water pokemon encounter.
+        - Add Azumarill as a rod pokemon encounter.
+    - Gym Leader Parties:
+        - BROCK
+            - Onix now has Bullet Seed, replacing Tackle.
+            - Onix now has Mud Slap.
+        - MISTY
+            - Staryu level increased from 18 to 21.
+            - Now has a Seadra with the following moveset:
+                - Water Pulse
+                - Thundershock
+                - Smokescreen
+                - Substitute
+            - Starmie now has 15 IVs.
+        - LT. SURGE
+            - Voltorb level increased from 21 to 26.
+            - Voltorb IVs increased to 15.
+            - Second Voltorb added with the following moveset:
+                - Explosion
+            - Pikachu level increased from 18 to 26.
+            - Raichu level increased from 24 to 28.
+            - Raichu now has 31 IVs.
+            - Raichu's moveset:
+                - Calm Mind
+                - Surf
+                - Thundershock
+                - Fire Blast
+        - ERIKA
+            - Tangela level increased from 24 to 30.
+            - Vileplume level increased from 29 to 31.
+            - Vileplume now has 31 IVs.
+            - Now has a Venusaur with the following moveset:
+                - Sunny Day
+                - Solarbeam
+                - Spore
+                - Earthquake
+        - KOGA
+            - Koffing level decreased from 37 to 34.
+            - Muk level decreased from 39 to 37.
+            - Second Koffing level decreased from 38 to 37.
+            - Weezing level decreased from 43 to 38.
+            - Weezing now has 31 IVs.
+            - Weezing's moveset:
+                - Sludge Bomb
+                - Swords Dance (How?)
+                - Earthquake
+                - Toxic
+        - Sabrina
+            - Now has a Level 39 Mew.
+            - Mew has 31 IVs.
+            - Mew's moveset:
+                - Toxic
+                - Psychic
+                - Recover
+                - Spikes
+        - Blaine
+            - Now has a Level 43 Moltres.
+            - Moltres has 31 IVs.
+            - Moltres moveset:
+                - Overheat
+                - Sunny Day
+                - Fire Blast
+                - Substitute.
+        - Giovanni
+            - Rhyhorns replaced with Rhydon.
+            - Has a Level 42 Groudon.
+            - Groudon has 31 IVs.
+            - Groudon moveset:
+                - Earthquake
+                - Overheat
+                - Swords Dance
+                - Rock Throw
+- Display actual power to friendship-based moves.
+- RETURN and FRUSTRATION's attack type now depend on the pokemon's first type.
+- Add physical-special split.
+  Revamp damage and type calculation.
+  Update moves.
+- Revise structure of the type chart.
+
+1.0.0:
 - Hide healthbars while playing a move animation.
 - Improve HP drain speed for higher HP mons in battle
 - Add color (red = plus, blue = minus) to stats of Pokemon based on their nature.
