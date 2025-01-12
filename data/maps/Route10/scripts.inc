@@ -1,7 +1,8 @@
 Route10_MapScripts::
 	.byte 0
 
-Route10_EventScript_Unused::
+Route10_EventScript_CoolUntrainerTip::
+	msgbox Route10_Text_CoolUntrainerTip, MSGBOX_NPC
 	end
 
 Route10_EventScript_NorthRockTunnelSign::

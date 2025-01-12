@@ -84,3 +84,13 @@ Route10_Text_RockTunnel::
 Route10_Text_PowerPlant::
     .string "POWER PLANT$"
 
+Route10_Text_CoolUntrainerTip::
+    .string "Hoff! Whoo!\p"
+    .string "Nothing beats a whole\n"
+    .string "day of training.\p"
+    .string "I could tell that my\n"
+    .string "POKéMON have gotten\p"
+    .string "a lot stronger at blasting\n"
+    .string "away their foes around\p"
+    .string "the time I started\n"
+    .string "training here.$"
