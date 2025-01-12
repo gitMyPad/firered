@@ -989,6 +989,21 @@ static const u16 * const sHpBarPals[] =
     }                                 \
 }
 
+static const u8 sTextAtk[]      = _("ATK");
+static const u8 sTextSpatk[]    = _("SPATK");
+static const u8 sTextDef[]      = _("DEF");
+static const u8 sTextSpdef[]    = _("SPDEF");
+static const u8 sTextSpeed[]    = _("SPEED");
+
+static const u8* const sMoveTypeAttackStat[5]   =
+{
+    [(MOVETARGET_SOURCE_ATK >> 2) - 1]          = sTextAtk,
+    [(MOVETARGET_SOURCE_SPATK >> 2) - 1]        = sTextSpatk,
+    [(MOVETARGET_SOURCE_DEF >> 2) - 1]          = sTextDef,
+    [(MOVETARGET_SOURCE_SPDEF >> 2) - 1]        = sTextSpdef,
+    [(MOVETARGET_SOURCE_SPEED >> 2) - 1]        = sTextSpeed
+};
+
 static bool8 IsWindowMove7Usable(void)
 {
     return (sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7] == 0xff)? FALSE : TRUE;
@@ -3123,6 +3138,7 @@ static void PokeSum_PrintExpPoints_NextLv(void)
 
 static void PokeSum_PrintSelectedMoveStats(void)
 {
+    u8 *flavorText;
     if (sMoveSelectionCursorPos < 5)
     {
         if (sMonSummaryScreen->mode != PSS_MODE_SELECT_MOVE && sMoveSelectionCursorPos == 4)
@@ -3150,6 +3166,20 @@ static void PokeSum_PrintSelectedMoveStats(void)
                                      0, 0,
                                      sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                      gMoveDescriptionPointers[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos] - 1]);
+
+        // Display stat for attacking.
+        if (gBattleMoves[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos]].targetFlags & MOVETARGET_MASK)
+        {
+            flavorText  = Alloc(8);
+            StringCopy(flavorText, sMoveTypeAttackStat[((gBattleMoves[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos]].targetFlags & MOVETARGET_SOURCE_MASK) >> 2) - 1]);
+
+            AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
+                                        87, 14,
+                                        0, 0,
+                                        sLevelNickTextColors[0], TEXT_SKIP_DRAW,
+                                        flavorText);
+            Free(flavorText);
+        }
     }
 }
 
