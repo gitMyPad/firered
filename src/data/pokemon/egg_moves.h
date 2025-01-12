@@ -1127,7 +1127,8 @@ const u16 gEggMoves[] = {
               MOVE_SING,
               MOVE_REFRESH,
               MOVE_SLAM,
-              MOVE_TICKLE),
+              MOVE_TICKLE,
+              MOVE_BELLY_DRUM),
 
     egg_moves(SPOINK,
               MOVE_FUTURE_SIGHT,
