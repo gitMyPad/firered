@@ -2962,47 +2962,65 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
 
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 {
-    u8 i, j, m;
-    u8 k = 0;
-    u16 *flaggedFieldMoves  = NULL;
+    u8 i, j, k;
 
     sPartyMenuInternal->numActions = 0;
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_SUMMARY);
+
     // Add field moves to action list
-    for (i = 0; i < MAX_MON_MOVES; ++i)
+    for (j = 0, k = 0; sFieldMoves[j] != FIELD_MOVE_END; ++j)
     {
-        for (j = 0; sFieldMoves[j] != FIELD_MOVE_END; ++j)
+        // Search the pokemon's move roster for any useful
+        // field moves.
+        for (i = 0; i < MAX_MON_MOVES; ++i)
         {
-            //  Check the list of flagged field moves.
-            if (flaggedFieldMoves != NULL)
-            {
-                for (m = 0;  m < k; m++)
-                {
-                    //  This field move (actually index) is flagged
-                    //  as duplicate.
-                    if (flaggedFieldMoves[m] == j)
-                        break;
-                }
-                if (m < k)
-                    goto skip_append;
-            }
-            if ((GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j]) || 
+            if ((GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == 
+                 sFieldMoves[j]) || 
                 (CanMonUseFieldMove(&mons[slotId], sFieldMoves[j])))
             {
                 AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + CURSOR_OPTION_FIELD_MOVES);
+                k++;
                 break;
             }
-        skip_append:
-            continue;
         }
-        if (j >= FIELD_MOVE_END)
-            continue;
-
-        if (flaggedFieldMoves == NULL)
-            flaggedFieldMoves   = Alloc(13);
-
-        flaggedFieldMoves[k++]  = j;
+        // A field move was found. Move to the next.
+        if (k >= MAX_MON_MOVES)
+            break;
     }
+    // for (i = 0; i < MAX_MON_MOVES; ++i)
+    // {
+    //     for (j = 0; sFieldMoves[j] != FIELD_MOVE_END; ++j)
+    //     {
+    //         //  Check the list of flagged field moves.
+    //         if (flaggedFieldMoves != NULL)
+    //         {
+    //             for (m = 0;  m < k; m++)
+    //             {
+    //                 //  This field move (actually index) is flagged
+    //                 //  as duplicate.
+    //                 if (flaggedFieldMoves[m] == j)
+    //                     break;
+    //             }
+    //             if (m < k)
+    //                 goto skip_append;
+    //         }
+    //         if ((GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j]) || 
+    //             (CanMonUseFieldMove(&mons[slotId], sFieldMoves[j])))
+    //         {
+    //             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + CURSOR_OPTION_FIELD_MOVES);
+    //             break;
+    //         }
+    //     skip_append:
+    //         continue;
+    //     }
+    //     if (j >= FIELD_MOVE_END)
+    //         continue;
+
+    //     if (flaggedFieldMoves == NULL)
+    //         flaggedFieldMoves   = Alloc(13);
+
+    //     flaggedFieldMoves[k++]  = j;
+    // }
     if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_SWITCH);
     if (ItemIsMail(GetMonData(&mons[slotId], MON_DATA_HELD_ITEM)))
@@ -3010,10 +3028,6 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     else
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_ITEM);
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, CURSOR_OPTION_CANCEL1);
-
-    // Free the memory allocated.
-    if (flaggedFieldMoves != NULL)
-        Free(flaggedFieldMoves);
 }
 
 static u8 GetPartyMenuActionsType(struct Pokemon *mon)
