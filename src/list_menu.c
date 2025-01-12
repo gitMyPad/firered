@@ -10,6 +10,7 @@
 #include "strings.h"
 #include "pokemon_icon.h"
 #include "constants/songs.h"
+#include "constants/moves.h"
 
 struct MysteryGiftLinkMenuStruct
 {
@@ -75,6 +76,15 @@ static const struct MoveMenuInfoIcon sMenuInfoIcons[] =
     [MENU_INFO_ICON_ACCURACY]  = { 40, 12, 0xC8 },
     [MENU_INFO_ICON_PP]        = { 40, 12, 0xE0 },
     [MENU_INFO_ICON_EFFECT]    = { 40, 12, 0xE8 },
+};
+
+static const struct MoveMenuInfoIcon sMenuMoveTypeIcons[] =
+{
+    [MOVETARGET_STATUS]                             = { 24, 12, 0x10 },
+    [MOVETARGET_TARGET_SPDEF | MOVETARGET_ATTACK]   = { 24, 12, 0x08 },
+    // Duplicate of MOVETARGET_STATUS
+    [MOVETARGET_TARGET_DEF]                         = { 24, 12, 0x10 },
+    [MOVETARGET_TARGET_DEF | MOVETARGET_ATTACK]     = { 24, 12, 0x00 },
 };
 
 static void ListMenuDummyTask(u8 taskId)
@@ -748,6 +758,9 @@ void ListMenuLoadStdPalAt(u8 palOffset, u8 palId)
     case 1:
         palette = gMenuInfoElements2_Pal;
         break;
+    case 2:
+        palette = gMenuInfoMoveType_Pal;
+        break;
     }
     LoadPalette(palette, palOffset, PLTT_SIZE_4BPP);
 }
@@ -755,4 +768,9 @@ void ListMenuLoadStdPalAt(u8 palOffset, u8 palId)
 void BlitMenuInfoIcon(u8 windowId, u8 iconId, u16 x, u16 y)
 {
     BlitBitmapRectToWindow(windowId, &gMenuInfoElements_Gfx[sMenuInfoIcons[iconId].offset * TILE_SIZE_4BPP], 0, 0, 128, 128, x, y, sMenuInfoIcons[iconId].width, sMenuInfoIcons[iconId].height);
+}
+
+void BlitMoveTypeIcon(u8 windowId, u8 iconId, u16 x, u16 y)
+{
+    BlitBitmapRectToWindow(windowId, &gMenuInfoMoveType_Gfx[sMenuMoveTypeIcons[iconId].offset * TILE_SIZE_4BPP], 0, 0, 32, 48, x, y, sMenuMoveTypeIcons[iconId].width, sMenuMoveTypeIcons[iconId].height);
 }

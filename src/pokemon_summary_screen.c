@@ -147,9 +147,9 @@ struct PokemonSummaryScreenData
     u16 bg1TilemapBuffer[0x800];
     u16 bg2TilemapBuffer[0x800];
     u16 bg3TilemapBuffer[0x800];
-    u8 ALIGNED(4) windowIds[7];
+    u8 ALIGNED(4) windowIds[8];
 
-    u8 ALIGNED(4) unk3008;
+    // u8 ALIGNED(4) unk3008;
     u8 ALIGNED(4) ballIconSpriteId;
     u8 ALIGNED(4) monPicSpriteId;
     u8 ALIGNED(4) monIconSpriteId;
@@ -715,6 +715,7 @@ static const struct BgTemplate sBgTempaltes[] =
 #define POKESUM_WIN_MOVES_4          4
 #define POKESUM_WIN_MOVES_5          5
 #define POKESUM_WIN_MOVES_6          6
+#define POKESUM_WIN_MOVES_7          7
 
 static const struct WindowTemplate sWindowTemplates_Permanent_Bg1[] =
 {
@@ -896,6 +897,15 @@ static const struct WindowTemplate sWindowTemplates_Moves[] =
         .paletteNum = 6,
         .baseBlock = 0x01d2
     },
+    [POKESUM_WIN_MOVES_7 - 3] = {
+        .bg = 0,
+        .tilemapLeft = 11,
+        .tilemapTop = 7,
+        .width = 6,
+        .height = 6,
+        .paletteNum = 9,
+        .baseBlock = 0x00b5
+    },
 };
 
 static const struct WindowTemplate sWindowTemplates_Dummy[] = 
@@ -977,6 +987,25 @@ static const u16 * const sHpBarPals[] =
         free(ptr);                    \
         (ptr) = NULL;                 \
     }                                 \
+}
+
+static bool8 IsWindowMove7Usable(void)
+{
+    return (sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7] == 0xff)? FALSE : TRUE;
+}
+
+static void ShowWindowMoves7(void)
+{
+    if (!IsWindowMove7Usable())
+        return;
+    CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7], 2);
+}
+
+static void ClearWindowMoves7(void)
+{
+    if (!IsWindowMove7Usable())
+        return;
+    FillWindowPixelBuffer(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7], 0);
 }
 
 void ShowPokemonSummaryScreen(struct Pokemon * party, u8 cursorPos, u8 lastIdx, MainCallback savedCallback, u8 mode)
@@ -1325,10 +1354,16 @@ static void Task_PokeSum_FlipPages(u8 taskId)
         PokeSum_PrintMonTypeIcons();
         break;
     case 8:
+        // if ((sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES_INFO) &&
+        //     (sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7] != 0xff))
+        //     CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7], 2);
+
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[5], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[6], 2);
+        // ShowWindowMoves7();
+        
         break;
     case 9:
         if (!IsDma3ManagerBusyWithBgCopy())
@@ -1433,6 +1468,10 @@ static void Task_FlipPages_FromInfo(u8 taskId)
 
         PokeSum_PrintBottomPaneText();
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
+        // ShowWindowMoves7();
+        // if ((sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES_INFO) &&
+        //     (sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7] != 0xff))
+        //     CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7], 2);
         break;
     case 9:
         PokeSum_PrintMonTypeIcons();
@@ -1442,6 +1481,7 @@ static void Task_FlipPages_FromInfo(u8 taskId)
         PokeSum_ShowSpritesBeforePageFlip();
         CopyWindowToVram(sMonSummaryScreen->windowIds[6], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_LVL_NICK], 2);
+
         break;
     case 11:
         if (!IsDma3ManagerBusyWithBgCopy())
@@ -1497,9 +1537,16 @@ static void Task_BackOutOfSelectMove(u8 taskId)
         PokeSum_PrintRightPaneText();
         PokeSum_PrintBottomPaneText();
         PokeSum_PrintAbilityDataOrMoveTypes();
+
+        // if ((sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES_INFO) &&
+        //     (sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7] != 0xff))
+        //     CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7], 2);
+
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[5], 2);
+        // ClearWindowMoves7();
+        // ShowWindowMoves7();
         CopyBgTilemapBufferToVram(0);
         break;
     case 4:
@@ -1530,6 +1577,7 @@ static void Task_BackOutOfSelectMove(u8 taskId)
     case 9:
         CopyWindowToVram(sMonSummaryScreen->windowIds[6], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_LVL_NICK], 2);
+
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(2);
         CopyBgTilemapBufferToVram(1);
@@ -1989,10 +2037,16 @@ static void CB2_SetUpPSS(void)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_PAGE_NAME], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_CONTROLS], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_LVL_NICK], 2);
+
+        // if ((sMonSummaryScreen->curPageIndex == PSS_PAGE_MOVES_INFO) &&
+        //     (sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7] != 0xff))
+        //     CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7], 2);
+
         CopyWindowToVram(sMonSummaryScreen->windowIds[6], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[5], 2);
+        // ShowWindowMoves7();
         break;
     case 14:
         CopyBgTilemapBufferToVram(0);
@@ -2048,6 +2102,7 @@ static u8 PokeSum_HandleLoadBgGfx(void)
         break;
     case 1:
         ListMenuLoadStdPalAt(BG_PLTT_ID(6), 1);
+        ListMenuLoadStdPalAt(BG_PLTT_ID(9), 2);
         LoadPalette(sTextHeaderPalette, BG_PLTT_ID(7), PLTT_SIZE_4BPP);
         break;
     case 2:
@@ -2801,7 +2856,10 @@ static void PokeSum_PrintBottomPaneText(void)
         PokeSum_PrintExpPoints_NextLv();
         break;
     case PSS_PAGE_MOVES_INFO:
+        // ClearWindowMoves7();
         PokeSum_PrintSelectedMoveStats();
+        if (IsWindowMove7Usable())
+            PutWindowTilemap(sMonSummaryScreen->windowIds[POKESUM_WIN_MOVES_7]);
         break;
     case PSS_PAGE_MOVES:
         break;
@@ -3070,16 +3128,23 @@ static void PokeSum_PrintSelectedMoveStats(void)
         if (sMonSummaryScreen->mode != PSS_MODE_SELECT_MOVE && sMoveSelectionCursorPos == 4)
             return;
 
+        BlitMoveTypeIcon(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO],
+                        gBattleMoves[sMonSummaryScreen->moveIds[sMoveSelectionCursorPos]].targetFlags & (MOVETARGET_MASK | MOVETARGET_TARGET_MASK),
+                        87, 2);
+
+        // Display Power.
         AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
                                      57, 1,
                                      sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                      sMonSummaryScreen->summary.movePowerStrBufs[sMoveSelectionCursorPos]);
 
+        // Display accuracy.
         AddTextPrinterParameterized3(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
                                      57, 15,
                                      sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                      sMonSummaryScreen->summary.moveAccuracyStrBufs[sMoveSelectionCursorPos]);
 
+        // Display move description.
         AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
                                      7, 42,
                                      0, 0,
@@ -3382,17 +3447,23 @@ static void PokeSum_CreateWindows(void)
     for (i = 0; i < 3; i++)
         sMonSummaryScreen->windowIds[i] = AddWindow(&sWindowTemplates_Permanent_Bg1[i]);
 
-    for (i = 0; i < 4; i++)
+    for (i = 0; i <= 4; i++)
         switch (sMonSummaryScreen->curPageIndex)
         {
         case PSS_PAGE_INFO:
+            if (i >= 4)
+                break;
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Info[i]);
             break;
         case PSS_PAGE_SKILLS:
+            if (i >= 4)
+                break;
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Skills[i]);
             break;
         case PSS_PAGE_MOVES:
         case PSS_PAGE_MOVES_INFO:
+            if (i >= 4)
+                break;
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Moves[i]);
             break;
         default:
@@ -3406,7 +3477,7 @@ static void PokeSum_AddWindows(u8 curPageIndex)
     u32 bgPriority1 = GetGpuReg(REG_OFFSET_BG1CNT) & 3;
     u32 bgPriority2 = GetGpuReg(REG_OFFSET_BG2CNT) & 3;
 
-    for (i = 0; i < 7; i++)
+    for (i = 0; i < 8; i++)
         sMonSummaryScreen->windowIds[i] = 0xff;
 
     if ((sMonSummaryScreen->pageFlipDirection == 1 && sMonSummaryScreen->curPageIndex != PSS_PAGE_MOVES_INFO)
@@ -3429,18 +3500,24 @@ static void PokeSum_AddWindows(u8 curPageIndex)
                 sMonSummaryScreen->windowIds[i] = AddWindow(&sWindowTemplates_Permanent_Bg2[i]);
     }
 
-    for (i = 0; i < 4; i++)
+    for (i = 0; i <= 4; i++)
         switch (curPageIndex)
         {
         case PSS_PAGE_INFO:
+            if (i >= 4)
+                break;
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Info[i]);
             break;
         case PSS_PAGE_SKILLS:
         default:
+            if (i >= 4)
+                break;
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Skills[i]);
             break;
         case PSS_PAGE_MOVES:
         case PSS_PAGE_MOVES_INFO:
+            if (i >= 4)
+                break;
             sMonSummaryScreen->windowIds[i + 3] = AddWindow(&sWindowTemplates_Moves[i]);
             break;
         }
@@ -3449,10 +3526,12 @@ static void PokeSum_AddWindows(u8 curPageIndex)
 static void PokeSum_RemoveWindows(u8 curPageIndex)
 {
     u8 i;
-
-    for (i = 0; i < 7; i++)
+    for (i = 0; i < 8; i++)
+    {
+        if (sMonSummaryScreen->windowIds[i] == 0xff)
+            continue;
         RemoveWindow(sMonSummaryScreen->windowIds[i]);
-
+    }
 }
 
 static void PokeSum_SetHelpContext(void)
@@ -3900,6 +3979,8 @@ static void Task_HandleInput_SelectMove(u8 taskId)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[5], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[6], 2);
+        ShowWindowMoves7();
+        
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(3);
         sMonSummaryScreen->selectMoveInputHandlerState = 0;
@@ -4118,17 +4199,20 @@ static void Task_InputHandler_SelectOrForgetMove(u8 taskId)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[5], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[6], 2);
+        // ShowWindowMoves7();
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(3);
         sMonSummaryScreen->selectMoveInputHandlerState = 2;
         break;
     case 5:
         FillWindowPixelBuffer(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 0);
+        // ClearWindowMoves7();
         AddTextPrinterParameterized4(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], FONT_NORMAL,
                                      7, 42,
                                      0, 0,
                                      sLevelNickTextColors[0], TEXT_SKIP_DRAW,
                                      gText_PokeSum_HmMovesCantBeForgotten);
+        // ShowWindowMoves7();
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(3);
@@ -5375,9 +5459,12 @@ static void Task_PokeSum_SwitchDisplayedPokemon(u8 taskId)
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_CONTROLS], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_LVL_NICK], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[6], 2);
+
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_RIGHT_PANE], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[POKESUM_WIN_TRAINER_MEMO], 2);
         CopyWindowToVram(sMonSummaryScreen->windowIds[5], 2);
+        // ShowWindowMoves7();
+        
         CopyBgTilemapBufferToVram(0);
         CopyBgTilemapBufferToVram(2);
         CopyBgTilemapBufferToVram(3);
