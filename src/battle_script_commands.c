@@ -1074,7 +1074,10 @@ static void Cmd_accuracycheck(void)
 
         if (gBattleMons[gBattlerAttacker].ability == ABILITY_COMPOUND_EYES)
             calc = (calc * 130) / 100; // 1.3 compound eyes boost
-        if (WEATHER_HAS_EFFECT && gBattleMons[gBattlerTarget].ability == ABILITY_SAND_VEIL && gBattleWeather & B_WEATHER_SANDSTORM)
+        if (WEATHER_HAS_EFFECT &&
+            gBattleMons[gBattlerTarget].ability == ABILITY_SAND_VEIL &&
+            (gBattleWeather & B_WEATHER_SANDSTORM) &&
+            gBattleMons[gBattlerTarget].ability != ABILITY_KEEN_EYE)
             calc = (calc * 80) / 100; // 1.2 sand veil loss
         if (gBattleMons[gBattlerAttacker].ability == ABILITY_HUSTLE && IS_TYPE_PHYSICAL(type))
             calc = (calc * 80) / 100; // 1.2 hustle loss
@@ -7090,21 +7093,21 @@ static void Cmd_weatherdamage(void)
                 gBattleMoveDamage = 0;
             }
         }
-        if (gBattleWeather & B_WEATHER_HAIL)
-        {
-            if (!IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_ICE)
-                && !(gStatuses3[gBattlerAttacker] & STATUS3_UNDERGROUND)
-                && !(gStatuses3[gBattlerAttacker] & STATUS3_UNDERWATER))
-            {
-                gBattleMoveDamage = gBattleMons[gBattlerAttacker].maxHP / 16;
-                if (gBattleMoveDamage == 0)
-                    gBattleMoveDamage = 1;
-            }
-            else
-            {
-                gBattleMoveDamage = 0;
-            }
-        }
+        // if (gBattleWeather & B_WEATHER_HAIL)
+        // {
+        //     if (!IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_ICE)
+        //         && !(gStatuses3[gBattlerAttacker] & STATUS3_UNDERGROUND)
+        //         && !(gStatuses3[gBattlerAttacker] & STATUS3_UNDERWATER))
+        //     {
+        //         gBattleMoveDamage = gBattleMons[gBattlerAttacker].maxHP / 16;
+        //         if (gBattleMoveDamage == 0)
+        //             gBattleMoveDamage = 1;
+        //     }
+        //     else
+        //     {
+        //         gBattleMoveDamage = 0;
+        //     }
+        // }
     }
     else
     {

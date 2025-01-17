@@ -2658,6 +2658,11 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     }
     else
     {
+        // Allow Frozen Pokemon to move, but reduce
+        // their damage output to 50%.
+        if (attacker->status1 & STATUS1_FREEZE)
+            damage /= 2;
+
         // Apply Lightscreen
         if ((sideStatus & SIDE_STATUS_LIGHTSCREEN) && !IS_CRIT)
         {

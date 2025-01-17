@@ -1314,8 +1314,9 @@ u8 AtkCanceller_UnableToUseMove(void)
                 {
                     if (gBattleMoves[gCurrentMove].effect != EFFECT_THAW_HIT) // unfreezing via a move effect happens in case 13
                     {
+                        BattleScriptPushCursor();
                         gBattlescriptCurrInstr = BattleScript_MoveUsedIsFrozen;
-                        gHitMarker |= HITMARKER_NO_ATTACKSTRING;
+                        // gHitMarker |= HITMARKER_NO_ATTACKSTRING;
                     }
                     else
                     {
