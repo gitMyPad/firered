@@ -235,7 +235,7 @@ void BattleExtension_CheckImmuneAbilities(void)
 
         if (effectCount < 3)
         {
-            // Not very effective has a flagbit value of 1, apparently.
+            // Not very effective has a flagbit value of 2, apparently.
             flags |= 2;
             effectCount++;
         }
@@ -259,7 +259,7 @@ void BattleExtension_CheckImmuneAbilities(void)
     }
 }
 
-u8 GetTypeEffectivenessByType(u8 *effectCount, u8 atkType, u8 defType)
+static u8 GetTypeEffectByTypeRaw(u8 *effectCount, u8 atkType, u8 defType)
 {
     u8 effectiveness    = TYPE_MUL_NORMAL;
     effectiveness       = GET_TYPE_EFFECTIVENESS(atkType, defType);
@@ -278,6 +278,11 @@ u8 GetTypeEffectivenessByType(u8 *effectCount, u8 atkType, u8 defType)
             break;
     }
     return *effectCount;
+}
+
+u8 GetTypeEffectivenessByType(u8 *effectCount, u8 atkType, u8 defType)
+{
+    return GetTypeEffectByTypeRaw(effectCount, atkType, defType);
 }
 
 void BattleExtension_TypeCalc(u16 *move, u8 *attacker, u8 *target)

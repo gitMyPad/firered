@@ -9,6 +9,7 @@
 #include "battle_message.h"
 #include "battle_scripts.h"
 #include "battle_setup.h"
+#include "battle_ext.h"
 #include "berry.h"
 #include "data.h"
 #include "decompress.h"
@@ -3845,7 +3846,7 @@ static void HandleAction_UseMove(void)
         gCurrentActionFuncId = B_ACTION_FINISHED;
         return;
     }
-    gCritMultiplier = 1;
+    gCritMultiplier = NONCRIT_DMG;
     gBattleScripting.dmgMultiplier = 1;
     gBattleStruct->atkCancellerTracker = 0;
     gMoveResultFlags = 0;

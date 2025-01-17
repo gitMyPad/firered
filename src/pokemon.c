@@ -16,6 +16,7 @@
 #include "evolution_scene.h"
 #include "battle_message.h"
 #include "battle_util.h"
+#include "battle_ext.h"
 #include "link.h"
 #include "m4a.h"
 #include "pokedex.h"
@@ -2608,7 +2609,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     //          Stats finalized, compute
     //          damage.
     // ========================================
-    if (gCritMultiplier == 2)
+    if (IS_CRIT)
     {
         // Critical hit, if attacker has lost attack stat stages then ignore stat drop
         if (attacker->statStages[statIndex] > DEFAULT_STAT_STAGE)
@@ -2622,7 +2623,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     damage = damage * gBattleMovePower;
     damage *= (2 * attacker->level / 5 + 2);
 
-    if (gCritMultiplier == 2)
+    if (IS_CRIT)
     {
         // Critical hit, if defender has gained defense stat stages then ignore stat increase
         if (defender->statStages[defStatIndex] < DEFAULT_STAT_STAGE)
@@ -2643,7 +2644,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
             damage /= 2;
 
         // Apply Reflect
-        if ((sideStatus & SIDE_STATUS_REFLECT) && gCritMultiplier == 1)
+        if ((sideStatus & SIDE_STATUS_REFLECT) && !IS_CRIT)
         {
             if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
                 damage = 2 * (damage / 3);
@@ -2658,7 +2659,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     else
     {
         // Apply Lightscreen
-        if ((sideStatus & SIDE_STATUS_LIGHTSCREEN) && gCritMultiplier == 1)
+        if ((sideStatus & SIDE_STATUS_LIGHTSCREEN) && !IS_CRIT)
         {
             if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
                 damage = 2 * (damage / 3);

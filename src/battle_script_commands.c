@@ -1019,7 +1019,10 @@ static void Cmd_accuracycheck(void)
     }
     if (move == NO_ACC_CALC || move == NO_ACC_CALC_CHECK_LOCK_ON)
     {
-        if (gStatuses3[gBattlerTarget] & STATUS3_ALWAYS_HITS && move == NO_ACC_CALC_CHECK_LOCK_ON && gDisableStructs[gBattlerTarget].battlerWithSureHit == gBattlerAttacker)
+        if (gStatuses3[gBattlerTarget] & STATUS3_ALWAYS_HITS &&
+            move == NO_ACC_CALC_CHECK_LOCK_ON &&
+            gDisableStructs[gBattlerTarget].battlerWithSureHit == gBattlerAttacker)
+
             gBattlescriptCurrInstr += 7;
         else if (gStatuses3[gBattlerTarget] & (STATUS3_ON_AIR | STATUS3_UNDERGROUND | STATUS3_UNDERWATER))
             gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
@@ -1042,15 +1045,16 @@ static void Cmd_accuracycheck(void)
         if (AccuracyCalcHelper(move))
             return;
 
-        if (gBattleMons[gBattlerTarget].status2 & STATUS2_FORESIGHT)
+        if ((gBattleMons[gBattlerTarget].status2 & STATUS2_FORESIGHT) ||
+            (gBattleMons[gBattlerAttacker].ability == ABILITY_KEEN_EYE))
         {
-            u8 acc = gBattleMons[gBattlerAttacker].statStages[STAT_ACC];
-            buff = acc;
+            u8 acc  = gBattleMons[gBattlerAttacker].statStages[STAT_ACC];
+            buff    = min(acc, DEFAULT_STAT_STAGE);
         }
         else
         {
-            u8 acc = gBattleMons[gBattlerAttacker].statStages[STAT_ACC];
-            buff = acc + DEFAULT_STAT_STAGE - gBattleMons[gBattlerTarget].statStages[STAT_EVASION];
+            u8 acc  = gBattleMons[gBattlerAttacker].statStages[STAT_ACC];
+            buff    = acc + DEFAULT_STAT_STAGE - gBattleMons[gBattlerTarget].statStages[STAT_EVASION];
         }
 
         if (buff < MIN_STAT_STAGE)
@@ -1060,11 +1064,13 @@ static void Cmd_accuracycheck(void)
 
         moveAcc = gBattleMoves[move].accuracy;
         // check Thunder on sunny weather
-        if (WEATHER_HAS_EFFECT && gBattleWeather & B_WEATHER_SUN && gBattleMoves[move].effect == EFFECT_THUNDER)
+        if (WEATHER_HAS_EFFECT && 
+            (gBattleWeather & B_WEATHER_SUN) && 
+             gBattleMoves[move].effect == EFFECT_THUNDER)
             moveAcc = 50;
 
-        calc = sAccuracyStageRatios[buff].dividend * moveAcc;
-        calc /= sAccuracyStageRatios[buff].divisor;
+        calc    = sAccuracyStageRatios[buff].dividend * moveAcc;
+        calc   /= sAccuracyStageRatios[buff].divisor;
 
         if (gBattleMons[gBattlerAttacker].ability == ABILITY_COMPOUND_EYES)
             calc = (calc * 130) / 100; // 1.3 compound eyes boost
@@ -1193,16 +1199,25 @@ static void Cmd_critcalc(void)
     if (critChance >= ARRAY_COUNT(sCriticalHitChance))
         critChance = ARRAY_COUNT(sCriticalHitChance) - 1;
 
-    if ((gBattleMons[gBattlerTarget].ability != ABILITY_BATTLE_ARMOR && gBattleMons[gBattlerTarget].ability != ABILITY_SHELL_ARMOR)
-     && !(gStatuses3[gBattlerAttacker] & STATUS3_CANT_SCORE_A_CRIT)
-     && !(gBattleTypeFlags & BATTLE_TYPE_OLD_MAN_TUTORIAL)
-     && !(Random() % sCriticalHitChance[critChance])
-     && (!(gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE) || BtlCtrl_OakOldMan_TestState2Flag(1))
-     && !(gBattleTypeFlags & BATTLE_TYPE_POKEDUDE))
-        gCritMultiplier = 2;
-    else
-        gCritMultiplier = 1;
+    if ((gBattleMons[gBattlerTarget].ability == ABILITY_BATTLE_ARMOR) ||
+        (gBattleMons[gBattlerTarget].ability == ABILITY_SHELL_ARMOR) ||
+        (gBattleTypeFlags & BATTLE_TYPE_OLD_MAN_TUTORIAL) ||        
+        (Random() % sCriticalHitChance[critChance]) || 
+        ((gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE) &&
+        !(BtlCtrl_OakOldMan_TestState2Flag(1))) ||
+        (gBattleTypeFlags & BATTLE_TYPE_POKEDUDE))
+    {
+        gCritMultiplier = NONCRIT_DMG;
+        goto on_return;
+    }
 
+    if ((gBattleMons[gBattlerAttacker].ability == ABILITY_KEEN_EYE) && 
+        (gBattleMons[gBattlerTarget].statStages[STAT_EVASION] > DEFAULT_STAT_STAGE))
+        gCritMultiplier = NONCRIT_DMG + 5 * (gBattleMons[gBattlerTarget].statStages[STAT_EVASION] - DEFAULT_STAT_STAGE);
+    else
+        gCritMultiplier = CRIT_DMG;
+    
+on_return:
     gBattlescriptCurrInstr++;
 }
 
@@ -1212,7 +1227,7 @@ static void Cmd_damagecalc(void)
     gBattleMoveDamage = CalculateBaseDamage(&gBattleMons[gBattlerAttacker], &gBattleMons[gBattlerTarget], gCurrentMove,
                                             sideStatus, gDynamicBasePower,
                                             gBattleStruct->dynamicMoveType, gBattlerAttacker, gBattlerTarget);
-    gBattleMoveDamage = gBattleMoveDamage * gCritMultiplier * gBattleScripting.dmgMultiplier;
+    gBattleMoveDamage = gBattleMoveDamage * gCritMultiplier * gBattleScripting.dmgMultiplier / NONCRIT_DMG;
 
     if (gStatuses3[gBattlerAttacker] & STATUS3_CHARGED_UP && gBattleMoves[gCurrentMove].type == TYPE_ELECTRIC)
         gBattleMoveDamage *= 2;
@@ -1789,7 +1804,7 @@ static void Cmd_critmessage(void)
 {
     if (gBattleControllerExecFlags == 0)
     {
-        if (gCritMultiplier == 2 && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
+        if (IS_CRIT && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
         {
             PrepareStringBattle(STRINGID_CRITICALHIT, gBattlerAttacker);
             gBattleCommunication[MSG_DISPLAY] = 1;
@@ -3389,7 +3404,7 @@ static void MoveValuesCleanUp(void)
 {
     gMoveResultFlags = 0;
     gBattleScripting.dmgMultiplier = 1;
-    gCritMultiplier = 1;
+    gCritMultiplier = NONCRIT_DMG;
     gBattleCommunication[MOVE_EFFECT_BYTE] = 0;
     gBattleCommunication[MISS_TYPE] = 0;
     gHitMarker &= ~HITMARKER_DESTINYBOND;

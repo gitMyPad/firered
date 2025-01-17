@@ -3,6 +3,13 @@
 
 #include "battle_main.h"
 
+#define NORMAL_DMG_COUNTER 3
+
+#define NONCRIT_DMG 10
+#define CRIT_DMG 15
+
+#define IS_CRIT (gCritMultiplier > NONCRIT_DMG)
+
 u8 GetBadgeCount(void);
 // ================= Type Calc  ===================
 u8 GetTypeEffectivenessByType(u8 *effectCount, u8 atkType, u8 defType);
