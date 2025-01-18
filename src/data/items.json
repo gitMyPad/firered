@@ -1107,7 +1107,7 @@
     {
       "english": "PP UP",
       "itemId": "ITEM_PP_UP",
-      "price": 9800,
+      "price": 1000,
       "holdEffect": "HOLD_EFFECT_NONE",
       "holdEffectParam": 0,
       "description_english": "Slightly raises the maximum PP of\\na selected move for one POKéMON.",
@@ -1139,7 +1139,7 @@
     {
       "english": "PP MAX",
       "itemId": "ITEM_PP_MAX",
-      "price": 9800,
+      "price": 2500,
       "holdEffect": "HOLD_EFFECT_NONE",
       "holdEffectParam": 0,
       "description_english": "Raises the PP of a selected move\\nto its maximum level for one\\nPOKéMON.",
@@ -6062,7 +6062,7 @@
       "english": "CHOICE SPECS",
       "itemId": "ITEM_CHOICE_SPECS",
       "price": 100,
-      "holdEffect": "HOLD_EFFECT_CHOICE_SPECS",
+      "holdEffect": "HOLD_EFFECT_CHOICE_BAND",
       "holdEffectParam": 0,
       "description_english": "An item to be held by a POKéMON.\\nIt powers up one special move, \\nbut it is the only usable move.",
       "importance": 0,

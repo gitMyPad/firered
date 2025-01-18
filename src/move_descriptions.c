@@ -356,6 +356,7 @@ const u8 gMoveDescription_WaterPulse[] = _("An attack with a\npulsing blast of\n
 const u8 gMoveDescription_DoomDesire[] = _("A move that attacks\nthe foe with a\nblast of light two\nturns after use.");
 const u8 gMoveDescription_PsychoBoost[] = _("An intense attack\nthat also sharply\nreduces the user's\nSP. ATK stat.");
 const u8 gMoveDescription_JetPunch[] = _("Punches so fast\nit's likely to\nstrike first.");
+const u8 gMoveDescription_Hurricane[] = _("Besieges the opponent\nwith heavy gusts of wind.\nLow accuracy in Sun.");
 
 const u8 *const gMoveDescriptionPointers[MOVES_COUNT - 1] = {
     [MOVE_POUND         - 1] = gMoveDescription_Pound,
@@ -713,4 +714,5 @@ const u8 *const gMoveDescriptionPointers[MOVES_COUNT - 1] = {
     [MOVE_DOOM_DESIRE   - 1] = gMoveDescription_DoomDesire,
     [MOVE_PSYCHO_BOOST  - 1] = gMoveDescription_PsychoBoost,
     [MOVE_JET_PUNCH     - 1] = gMoveDescription_JetPunch,
+    [MOVE_HURRICANE     - 1] = gMoveDescription_Hurricane,
 };

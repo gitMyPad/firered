@@ -1189,6 +1189,7 @@ static void Cmd_critcalc(void)
         holdEffect = ItemId_GetHoldEffect(item);
 
     gPotentialItemEffectBattler = gBattlerAttacker;
+    gCritMultiplier = NONCRIT_DMG;
 
     critChance  = 2 * ((gBattleMons[gBattlerAttacker].status2 & STATUS2_FOCUS_ENERGY) != 0)
                 + (gBattleMoves[gCurrentMove].effect == EFFECT_HIGH_CRITICAL)
@@ -1205,19 +1206,17 @@ static void Cmd_critcalc(void)
     if ((gBattleMons[gBattlerTarget].ability == ABILITY_BATTLE_ARMOR) ||
         (gBattleMons[gBattlerTarget].ability == ABILITY_SHELL_ARMOR) ||
         (gBattleTypeFlags & BATTLE_TYPE_OLD_MAN_TUTORIAL) ||        
-        (Random() % sCriticalHitChance[critChance]) || 
         ((gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE) &&
         !(BtlCtrl_OakOldMan_TestState2Flag(1))) ||
         (gBattleTypeFlags & BATTLE_TYPE_POKEDUDE))
-    {
-        gCritMultiplier = NONCRIT_DMG;
+    {        
         goto on_return;
     }
 
     if ((gBattleMons[gBattlerAttacker].ability == ABILITY_KEEN_EYE) && 
         (gBattleMons[gBattlerTarget].statStages[STAT_EVASION] > DEFAULT_STAT_STAGE))
         gCritMultiplier = NONCRIT_DMG + 5 * (gBattleMons[gBattlerTarget].statStages[STAT_EVASION] - DEFAULT_STAT_STAGE);
-    else
+    else if (!(Random() % sCriticalHitChance[critChance]))
         gCritMultiplier = CRIT_DMG;
     
 on_return:

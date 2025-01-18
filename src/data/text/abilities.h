@@ -49,7 +49,7 @@ static const u8 sThickFatDescription[] = _("Heat-and-cold protection.");
 static const u8 sEarlyBirdDescription[] = _("Awakens quickly from sleep.");
 static const u8 sFlameBodyDescription[] = _("Burns the foe on contact.");
 static const u8 sRunAwayDescription[] = _("Makes escaping easier.");
-static const u8 sKeenEyeDescription[] = _("Prevents loss of accuracy.");
+static const u8 sKeenEyeDescription[] = _("Punishes opponent's evasiveness.");
 static const u8 sHyperCutterDescription[] = _("Prevents ATTACK reduction.");
 static const u8 sPickupDescription[] = _("May pick up items.");
 static const u8 sTruantDescription[] = _("Moves only every two turns.");
@@ -77,6 +77,7 @@ static const u8 sShellArmorDescription[] = _("Blocks critical hits.");
 static const u8 sCacophonyDescription[] = _("Avoids sound-based moves.");
 static const u8 sAirLockDescription[] = _("Negates weather effects.");
 static const u8 sSoftShellDescription[] = _("Resists GROUND and FIGHTING moves.");
+static const u8 sIronShellDescription[] = _("Become STEEL type on “Super effective” hits.");
 
 const u8 *const gAbilityDescriptionPointers[ABILITIES_COUNT] =
 {
@@ -159,6 +160,7 @@ const u8 *const gAbilityDescriptionPointers[ABILITIES_COUNT] =
     [ABILITY_CACOPHONY] = sCacophonyDescription,
     [ABILITY_AIR_LOCK] = sAirLockDescription,
     [ABILITY_SOFT_SHELL] = sSoftShellDescription,
+    [ABILITY_IRON_SHELL] = sIronShellDescription,
 };
 
 const u8 gAbilityNames[ABILITIES_COUNT][ABILITY_NAME_LENGTH + 1] =
@@ -242,4 +244,5 @@ const u8 gAbilityNames[ABILITIES_COUNT][ABILITY_NAME_LENGTH + 1] =
     [ABILITY_CACOPHONY] = _("CACOPHONY"),
     [ABILITY_AIR_LOCK] = _("AIR LOCK"),
     [ABILITY_SOFT_SHELL] = _("SOFT SHELL"),
+    [ABILITY_IRON_SHELL] = _("IRON SHELL"),
 };
