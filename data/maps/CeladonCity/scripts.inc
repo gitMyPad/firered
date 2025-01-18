@@ -104,3 +104,7 @@ CeladonCity_EventScript_PrizeExchangeSign::
 CeladonCity_EventScript_GameCornerSign::
 	msgbox CeladonCity_Text_GameCornerSign, MSGBOX_SIGN
 	end
+
+CeladonCity_EventScript_MiracleBiker::
+	msgbox CeladonCity_Text_MiracleBiker, MSGBOX_NPC
+	end

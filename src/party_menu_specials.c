@@ -106,3 +106,20 @@ void IsSelectedMonEgg(void)
     else
         gSpecialVar_Result = FALSE;
 }
+
+void EVTrainerClearMonEVs(void)
+{
+    s32 value   = 0;
+
+    // Sanity check.
+    if (GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_IS_EGG))
+        return;
+
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HP_EV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_ATK_EV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_DEF_EV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPEED_EV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPATK_EV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPDEF_EV, &value);
+    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
+}

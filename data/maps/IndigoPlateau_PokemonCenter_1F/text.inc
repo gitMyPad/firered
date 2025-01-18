@@ -41,3 +41,31 @@ IndigoPlateau_PokemonCenter_1F_Text_LancesCousinGymLeaderFarAway::
     .string "a cousin who's a GYM LEADER\l"
     .string "somewhere far away.$"
 
+IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainer::
+    .string "Heya! I'm the EV Trainer.\n"
+    .string "I can help with training\p"
+    .string "your POKéMON.\p"
+    .string "Let's take them to the top!$"
+
+IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerDeclined::
+    .string "That's cool. Let me know\n"
+    .string "if you change your mind.$"
+
+IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerDeclinedSecond::
+    .string "Alright. I'll be seeing\n"
+    .string "you soon.$"
+
+IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerWhichMon::
+    .string "Rock on, dude! So, who's\n"
+    .string "the lucky one now?$"
+
+IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerPrepNoEVs::
+    .string "Let's get it on.$"
+
+IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerNoEggs::
+    .string "What am I supposed to do\n"
+    .string "with this?\p"
+    .string "Make scrambled eggs?!$"
+
+IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerAfterAccept::
+    .string "Anyone else in your party?$"

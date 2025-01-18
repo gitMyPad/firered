@@ -1797,16 +1797,22 @@ static const struct TrainerMonNoItemDefaultMoves sParty_BikerBilly[] = {
 static const struct TrainerMonNoItemCustomMoves sParty_BikerNikolas[] = {
     {
         .iv = 0,
-        .lvl = 29,
-        .species = SPECIES_VOLTORB,
-        .moves = {MOVE_SPARK, MOVE_SONIC_BOOM, MOVE_SCREECH, MOVE_CHARGE},
+        .lvl = 31,
+        .species = SPECIES_ELECTRODE,
+        .moves = {MOVE_THUNDERBOLT, MOVE_CHARGE, MOVE_TAUNT, MOVE_SONIC_BOOM},
     },
     {
-        .iv = 0,
-        .lvl = 29,
-        .species = SPECIES_VOLTORB,
-        .moves = {MOVE_SPARK, MOVE_SONIC_BOOM, MOVE_SCREECH, MOVE_CHARGE},
+        .iv         = 31,
+        .lvl        = 31,
+        .species    = SPECIES_MACHAMP,
+        .moves      = {MOVE_REVENGE, MOVE_PURSUIT, MOVE_BULK_UP, MOVE_SUBSTITUTE},
     },
+    {
+        .iv         = 31,
+        .lvl        = 30,
+        .species    = SPECIES_GYARADOS,
+        .moves      = {MOVE_WATERFALL, MOVE_BOUNCE, MOVE_DRAGON_DANCE, MOVE_EARTHQUAKE},
+    }
 };
 
 static const struct TrainerMonNoItemCustomMoves sParty_BikerJaxon[] = {
@@ -3411,6 +3417,16 @@ static const struct TrainerMonNoItemDefaultMoves sParty_BirdKeeperWilton[] = {
         .lvl = 29,
         .species = SPECIES_FEAROW,
     },
+    {
+        .iv = 0,
+        .lvl = 28,
+        .species = SPECIES_DODRIO,
+    },
+    {
+        .iv = 0,
+        .lvl = 28,
+        .species = SPECIES_SWELLOW,
+    }
 };
 
 static const struct TrainerMonNoItemDefaultMoves sParty_BirdKeeperRamiro[] = {
@@ -6661,24 +6677,38 @@ static const struct TrainerMonNoItemDefaultMoves sParty_PicnickerGwen[] = {
     },
 };
 
-static const struct TrainerMonNoItemCustomMoves sParty_BikerVirgil[] = {
+static const struct TrainerMonItemCustomMoves sParty_BikerVirgil[] = {
     {
-        .iv = 0,
-        .lvl = 28,
-        .species = SPECIES_WEEZING,
-        .moves = {MOVE_SMOKESCREEN, MOVE_SLUDGE, MOVE_SMOG, MOVE_TACKLE},
+        .iv         = 31,
+        .lvl        = 28,
+        .species    = SPECIES_WEEZING,
+        .heldItem   = ITEM_LEFTOVERS,
+        .moves      = {MOVE_GROWTH, MOVE_SLUDGE_BOMB, MOVE_RECOVER, 
+                       MOVE_SIGNAL_BEAM},
     },
     {
-        .iv = 0,
-        .lvl = 28,
-        .species = SPECIES_KOFFING,
-        .moves = {MOVE_SMOKESCREEN, MOVE_SLUDGE, MOVE_SMOG, MOVE_TACKLE},
+        .iv         = 31,
+        .lvl        = 28,
+        .species    = SPECIES_MUK,
+        .heldItem   = ITEM_SITRUS_BERRY,
+        .moves      = {MOVE_MINIMIZE, MOVE_SLUDGE_BOMB,
+                       MOVE_FIRE_BLAST, MOVE_TOXIC},
     },
     {
-        .iv = 0,
-        .lvl = 28,
-        .species = SPECIES_WEEZING,
-        .moves = {MOVE_SMOKESCREEN, MOVE_SLUDGE, MOVE_SMOG, MOVE_TACKLE},
+        .iv         = 31,
+        .lvl        = 28,
+        .species    = SPECIES_MIGHTYENA,
+        .heldItem   = ITEM_MACHO_BRACE,
+        .moves      = {MOVE_CRUNCH, MOVE_HOWL, MOVE_DEFENSE_CURL,
+                       MOVE_ROLLOUT},
+    },
+    {
+        .iv         = 31,
+        .lvl        = 30,
+        .species    = SPECIES_BLISSEY,
+        .heldItem   = ITEM_LEFTOVERS,
+        .moves      = {MOVE_SOFT_BOILED, MOVE_TOXIC, MOVE_SEISMIC_TOSS,
+                       MOVE_NIGHT_SHADE},
     },
 };
 

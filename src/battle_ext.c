@@ -280,6 +280,40 @@ static u8 GetTypeEffectByTypeRaw(u8 *effectCount, u8 atkType, u8 defType)
     return *effectCount;
 }
 
+static void BattleExtension_TypeCalcHelper(u16 *move, u8 *moveType,
+                                           u8 *attackerType1, u8 *attackerType2,
+                                           u8 *defenderType1, u8 *defenderType2,
+                                           u8 attacker, u8 target)
+{
+    *attackerType1  = gBattleMons[attacker].type1;
+    *attackerType2  = gBattleMons[attacker].type2;
+    *defenderType1  = gBattleMons[target].type1;
+    *defenderType2  = gBattleMons[target].type2;
+
+    if (gBattleStruct->dynamicMoveType)
+        *moveType   = gBattleStruct->dynamicMoveType & DYNAMIC_TYPE_MASK;
+    else if ((*move) == MOVE_RETURN || (*move) == MOVE_FRUSTRATION)
+        *moveType   = *attackerType1;
+    else
+        *moveType = gBattleMoves[*move].type;
+
+    // Foresight overrides the ghost type immunity from
+    // Normal and Fighting type attacks.
+    // Current implementation is to set the target mon's
+    // effective type from Ghost to ???, which should
+    // take neutral damage across all sources.
+    if ((gBattleMons[target].status2 & STATUS2_FORESIGHT) &&
+        (IS_BATTLER_OF_TYPE2(*defenderType1, *defenderType2, TYPE_GHOST)) &&
+        ((*moveType == TYPE_FIGHTING) ||
+         (*moveType == TYPE_NORMAL)))
+    {
+        if (*defenderType1 == TYPE_GHOST)
+            *defenderType1  = TYPE_MYSTERY;
+        if (*defenderType2 == TYPE_GHOST)
+            *defenderType2  = TYPE_MYSTERY;
+    }
+}
+
 u8 GetTypeEffectivenessByType(u8 *effectCount, u8 atkType, u8 defType)
 {
     return GetTypeEffectByTypeRaw(effectCount, atkType, defType);
@@ -288,61 +322,40 @@ u8 GetTypeEffectivenessByType(u8 *effectCount, u8 atkType, u8 defType)
 void BattleExtension_TypeCalc(u16 *move, u8 *attacker, u8 *target)
 {
     s32 i               = 0;
-    u8 moveType;
     u8 effectCount      = 3;
+    u8 moveType;
+    u8 attackerType1, attackerType2;
+    u8 defenderType1, defenderType2;
     u8 effectiveness;
 
-    // Fetch move type.
-    GET_MOVE_TYPE(*move, moveType);
+    // Fetch move type, as well as attacker and
+    // target types.
+    BattleExtension_TypeCalcHelper(move, &moveType, &attackerType1,
+                                   &attackerType2, &defenderType1,
+                                   &defenderType2, *attacker,
+                                   *target);
 
-    if ((*move) == MOVE_RETURN || (*move) == MOVE_FRUSTRATION)
-    {
-        moveType    = gBattleMons[*attacker].type1;
-    }
-    
     // check stab
-    if (IS_BATTLER_OF_TYPE(*attacker, moveType))
-    {
+    if (IS_BATTLER_OF_TYPE2(attackerType1, attackerType2, moveType))
         gBattleMoveDamage = (gBattleMoveDamage * 15) / 10;
-    }
 
     if ((gBattleMons[*target].ability == ABILITY_LEVITATE) && 
         (moveType == TYPE_GROUND))
     {
-        gLastUsedAbility = gBattleMons[*target].ability;
-        gMoveResultFlags |= (MOVE_RESULT_MISSED | MOVE_RESULT_DOESNT_AFFECT_FOE);
-        gLastLandedMoves[*target] = 0;
-        gLastHitByType[*target] = 0;
+        gLastUsedAbility                = gBattleMons[*target].ability;
+        gMoveResultFlags                |= (MOVE_RESULT_MISSED | MOVE_RESULT_DOESNT_AFFECT_FOE);
+        gLastLandedMoves[*target]       = 0;
+        gLastHitByType[*target]         = 0;
         gBattleCommunication[MISS_TYPE] = B_MSG_GROUND_MISS;
         RecordAbilityBattle(*target, gLastUsedAbility);
         goto finalize_flags;
     }
 
-    GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[*target].type1);
-    if (gBattleMons[*target].type2 == gBattleMons[*target].type1)
+    GetTypeEffectivenessByType(&effectCount, moveType, defenderType1);
+    if (!(IS_BATTLER_MULTITYPE(defenderType1, defenderType2)))
         goto finalize_flags;
 
-    GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[*target].type2);
-
-    // ==================================
-    //        Check for Foresight.
-    // ==================================
-    if ((gBattleMons[*target].status2 & STATUS2_FORESIGHT) && 
-        (effectCount < 1))
-    {
-        if (((moveType == TYPE_NORMAL) || (moveType == TYPE_FIGHTING)) &&
-            (((gBattleMons[*target].type1 == TYPE_GHOST)) ||
-             ((gBattleMons[*target].type2 == TYPE_GHOST))))
-            effectCount = 3;
-        else
-            goto touch_grass;
-
-        if ((gBattleMons[*target].type1 == TYPE_GHOST) && (gBattleMons[*target].type2 != gBattleMons[*target].type1))
-            GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[*target].type2);
-
-        else if ((gBattleMons[*target].type2 == TYPE_GHOST) && (gBattleMons[*target].type1 != gBattleMons[*target].type2))
-            GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[*target].type1);
-    }
+    GetTypeEffectivenessByType(&effectCount, moveType, defenderType2);
 
 // Just a quirky jump here.
 touch_grass:
@@ -353,7 +366,8 @@ touch_grass:
         {
             case TYPE_FIGHTING:
             case TYPE_GROUND:
-                effectCount--;
+                if (effectCount > 0)
+                    effectCount--;
                 break;
         }
     }
@@ -361,7 +375,7 @@ touch_grass:
     // Check if the move is a status move before writing the flags.
     if (((gBattleMoves[*move].targetFlags & MOVETARGET_MASK) == 
           MOVETARGET_FLAG_STATUS) && 
-          ((effectCount != 3) && (effectCount != 0)))
+        ((effectCount != 3) && (effectCount != 0)))
         effectCount = 3;
         
     // Types determined. Write flags.
@@ -383,14 +397,13 @@ finalize_flags:
         {
             if (!(gMoveResultFlags & MOVE_RESULT_NOT_VERY_EFFECTIVE))
                 gMoveResultFlags |= MOVE_RESULT_NOT_VERY_EFFECTIVE;
-            effectCount++;
         }
         else
         {
             if (!(gMoveResultFlags & MOVE_RESULT_SUPER_EFFECTIVE))
                 gMoveResultFlags |= MOVE_RESULT_SUPER_EFFECTIVE;
-            effectCount--;
         }
+        effectCount = 3;
     }
 
     if (gBattleMons[*target].ability == ABILITY_WONDER_GUARD && 

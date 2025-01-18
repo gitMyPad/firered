@@ -3789,6 +3789,8 @@ static void WaitForEvoSceneToFinish(void)
 
 static void ReturnFromBattleToOverworld(void)
 {
+    u8 i        = 0;
+    u32 value   = 0;
     if (!(gBattleTypeFlags & BATTLE_TYPE_LINK))
     {
         RandomlyGivePartyPokerus(gPlayerParty);
@@ -3802,12 +3804,35 @@ static void ReturnFromBattleToOverworld(void)
         if (gBattleTypeFlags & BATTLE_TYPE_ROAMER)
         {
             UpdateRoamerHPStatus(&gEnemyParty[0]);
-#ifdef BUGFIX
-            if ((gBattleOutcome == B_OUTCOME_WON) || gBattleOutcome == B_OUTCOME_CAUGHT)
-#else
-            if ((gBattleOutcome & B_OUTCOME_WON) || gBattleOutcome == B_OUTCOME_CAUGHT) // Bug: When Roar is used by roamer, gBattleOutcome is B_OUTCOME_PLAYER_TELEPORTED (5).
-#endif                                                                                  // & with B_OUTCOME_WON (1) will return TRUE and deactivates the roamer.
+
+            // Bug: When Roar is used by roamer, gBattleOutcome is B_OUTCOME_PLAYER_TELEPORTED (5).
+            // & with B_OUTCOME_WON (1) will return TRUE and deactivates the roamer.
+            if ((gBattleOutcome & B_OUTCOME_WON) || 
+                (gBattleOutcome == B_OUTCOME_CAUGHT))
+
+            // if ((gBattleOutcome == B_OUTCOME_WON) || 
+            //     (gBattleOutcome == B_OUTCOME_CAUGHT)
+            
                 SetRoamerInactive();
+        }
+        // Iterate over the player's party and calculate their
+        // stats.
+        for (i = 0; i < PARTY_SIZE; ++i)
+        {
+            u32 species     = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
+            bool8 isDead    = FALSE;
+            // value           = 0;
+
+            if ((species != SPECIES_EGG) && 
+                (species != SPECIES_NONE))
+            {
+                isDead      = (GetMonData(&gPlayerParty[i], MON_DATA_HP) != 0)? FALSE : TRUE;
+                CalculateMonStats(&gPlayerParty[i]);
+
+                if (isDead && (GetMonData(&gPlayerParty[i], MON_DATA_HP) > 0))
+                    SetMonData(&gPlayerParty[i], MON_DATA_HP, &value);
+            }
+             
         }
         m4aSongNumStop(SE_LOW_HEALTH);
         SetMainCallback2(gMain.savedCallback);

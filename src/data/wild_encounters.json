@@ -19807,7 +19807,7 @@
               {
                 "min_level": 20,
                 "max_level": 20,
-                "species": "SPECIES_SPEAROW"
+                "species": "SPECIES_HOOTHOOT"
               },
               {
                 "min_level": 24,
@@ -19817,7 +19817,7 @@
               {
                 "min_level": 22,
                 "max_level": 22,
-                "species": "SPECIES_SPEAROW"
+                "species": "SPECIES_HOOTHOOT"
               },
               {
                 "min_level": 26,
@@ -19827,7 +19827,7 @@
               {
                 "min_level": 25,
                 "max_level": 25,
-                "species": "SPECIES_RATICATE"
+                "species": "SPECIES_SEEDOT"
               },
               {
                 "min_level": 25,
@@ -19842,12 +19842,12 @@
               {
                 "min_level": 29,
                 "max_level": 29,
-                "species": "SPECIES_RATICATE"
+                "species": "SPECIES_NUZLEAF"
               },
               {
                 "min_level": 22,
                 "max_level": 22,
-                "species": "SPECIES_RATTATA"
+                "species": "SPECIES_SKITTY"
               },
               {
                 "min_level": 27,
@@ -19857,7 +19857,7 @@
               {
                 "min_level": 22,
                 "max_level": 22,
-                "species": "SPECIES_RATTATA"
+                "species": "SPECIES_SKITTY"
               },
               {
                 "min_level": 29,
@@ -23632,6 +23632,71 @@
         {
           "map": "MAP_FOUR_ISLAND",
           "base_label": "sFourIsland_FireRed",
+          "land_mons": {
+            "encounter_rate": 21,
+            "mons": [
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_SQUIRTLE"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_CHARMANDER"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_BULBASAUR"
+              },
+              {
+                "min_level": 5,
+                "max_level": 5,
+                "species": "SPECIES_BULBASAUR"
+              },
+              {
+                "min_level": 38,
+                "max_level": 43,
+                "species": "SPECIES_GIRAFARIG"
+              },
+              {
+                "min_level": 43,
+                "max_level": 48,
+                "species": "SPECIES_GIRAFARIG"
+              },
+              {
+                "min_level": 33,
+                "max_level": 33,
+                "species": "SPECIES_TEDDIURSA"
+              },
+              {
+                "min_level": 33,
+                "max_level": 33,
+                "species": "SPECIES_LARVITAR"
+              },
+              {
+                "min_level": 38,
+                "max_level": 43,
+                "species": "SPECIES_TEDDIURSA"
+              },
+              {
+                "min_level": 38,
+                "max_level": 43,
+                "species": "SPECIES_LARVITAR"
+              },
+              {
+                "min_level": 43,
+                "max_level": 48,
+                "species": "SPECIES_TEDDIURSA"
+              },
+              {
+                "min_level": 43,
+                "max_level": 48,
+                "species": "SPECIES_LARVITAR"
+              }
+            ]
+          },
           "water_mons": {
             "encounter_rate": 2,
             "mons": [
@@ -23714,71 +23779,6 @@
                 "min_level": 25,
                 "max_level": 35,
                 "species": "SPECIES_PSYDUCK"
-              }
-            ]
-          },
-          "land_mons": {
-            "encounter_rate": 21,
-            "mons": [
-              {
-                "min_level": 5,
-                "max_level": 5,
-                "species": "SPECIES_SQUIRTLE"
-              },
-              {
-                "min_level": 5,
-                "max_level": 5,
-                "species": "SPECIES_CHARMANDER"
-              },
-              {
-                "min_level": 5,
-                "max_level": 5,
-                "species": "SPECIES_BULBASAUR"
-              },
-              {
-                "min_level": 5,
-                "max_level": 5,
-                "species": "SPECIES_BULBASAUR"
-              },
-              {
-                "min_level": 38,
-                "max_level": 43,
-                "species": "SPECIES_GIRAFARIG"
-              },
-              {
-                "min_level": 43,
-                "max_level": 48,
-                "species": "SPECIES_GIRAFARIG"
-              },
-              {
-                "min_level": 33,
-                "max_level": 33,
-                "species": "SPECIES_TEDDIURSA"
-              },
-              {
-                "min_level": 33,
-                "max_level": 33,
-                "species": "SPECIES_LARVITAR"
-              },
-              {
-                "min_level": 38,
-                "max_level": 43,
-                "species": "SPECIES_TEDDIURSA"
-              },
-              {
-                "min_level": 38,
-                "max_level": 43,
-                "species": "SPECIES_LARVITAR"
-              },
-              {
-                "min_level": 43,
-                "max_level": 48,
-                "species": "SPECIES_TEDDIURSA"
-              },
-              {
-                "min_level": 43,
-                "max_level": 48,
-                "species": "SPECIES_LARVITAR"
               }
             ]
           }

@@ -36,7 +36,7 @@ CeladonCity_DepartmentStore_4F_Items::
 	release
 	end
 
-CeladonCity_DepartmentStore_4F_EventScript_BattleClerk:
+CeladonCity_DepartmentStore_4F_EventScript_BattleClerk::
 	goto_if_questlog EventScript_ReleaseEnd
 	lock
 	faceplayer

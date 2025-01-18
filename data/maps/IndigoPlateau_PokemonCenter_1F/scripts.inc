@@ -51,6 +51,55 @@ IndigoPlateau_PokemonCenter_1F_EventScript_Clerk::
 	release
 	end
 
+IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer::
+	lock
+	faceplayer
+	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainer, MSGBOX_YESNO
+	goto IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_Dialog
+	end
+
+IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_Dialog::
+	goto_if_eq VAR_RESULT, YES, IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogAccept
+	goto IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogDecline
+	end
+
+IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogSecond::
+	goto_if_eq VAR_RESULT, YES, IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogAccept
+	goto IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogDeclineSecond
+	end
+	
+IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogDecline::
+	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerDeclined
+	release
+	end
+
+IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogDeclineSecond::
+	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerDeclinedSecond
+	release
+	end
+
+IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogAccept::
+	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerWhichMon
+	special ChoosePartyMon
+	waitstate
+	goto_if_ge VAR_0x8004, PARTY_SIZE, IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogDecline
+	special IsSelectedMonEgg
+	goto_if_eq VAR_RESULT, TRUE, IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogNoEgg
+	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerPrepNoEVs
+	playfanfare MUS_MOVE_DELETED
+	waitfanfare
+	fadescreen FADE_TO_BLACK
+	special EVTrainerClearMonEVs
+	fadescreen FADE_FROM_BLACK
+	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerAfterAccept, MSGBOX_YESNO
+	goto IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogSecond
+	end
+
+IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogNoEgg::
+	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerNoEggs
+	release
+	end
+
 	.align 2
 IndigoPlateau_PokemonCenter_1F_Items::
 	.2byte ITEM_ULTRA_BALL

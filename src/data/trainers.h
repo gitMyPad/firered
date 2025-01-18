@@ -4700,7 +4700,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
-        .party = NO_ITEM_CUSTOM_MOVES(sParty_BikerVirgil),
+        .party = ITEM_CUSTOM_MOVES(sParty_BikerVirgil),
     },
     [TRAINER_CAMPER_FLINT] = {
         .trainerClass = TRAINER_CLASS_CAMPER,

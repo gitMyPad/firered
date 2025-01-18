@@ -17,7 +17,9 @@ CeladonCity_Text_BlewItAllAtSlots::
     .string "Moan…\n"
     .string "I blew it all at the slots!\p"
     .string "I knew I should have cashed in my\n"
-    .string "COINS for prizes!$"
+    .string "COINS for prizes!\p"
+    .string "Maybe that Miracle Biker over\n"
+    .string "there can help me next time.$"
 
 CeladonCity_Text_MyTrustedPalPoliwrath::
     .string "This is my trusted pal, POLIWRATH.\p"
@@ -90,7 +92,11 @@ Text_SoftboiledTeach::
     .string "It must be good luck that brought\n"
     .string "us together finally.\p"
     .string "I'd like to celebrate by teaching\n"
-    .string "you the move SOFTBOILED.$"
+    .string "you the move SOFTBOILED.\p"
+    .string "But before that, look at that\n"
+    .string "preposterous biker.\p"
+    .string "How does he do it? Regardless,\n"
+    .string "shall we continue?$"
 
 Text_SoftboiledDeclined::
     .string "I'll always be keeping an eye out\n"
@@ -112,3 +118,9 @@ CeladonCity_Text_SomeoneStoleSilphScope::
     .string "But I lost sight of him!\n"
     .string "Where'd he go?$"
 
+CeladonCity_Text_MiracleBiker::
+    .string "They call me the Miracle\n"
+    .string "Biker the way I float over\n"
+    .string "the water.\p"
+    .string "Bet that geezer over there\n"
+    .string "is jealous.$"

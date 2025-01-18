@@ -483,6 +483,9 @@ extern struct BattleStruct *gBattleStruct;
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0))
 
 #define IS_BATTLER_OF_TYPE(battlerId, type)((gBattleMons[battlerId].type1 == type || gBattleMons[battlerId].type2 == type))
+#define IS_BATTLER_OF_TYPE2(typeId1, typeId2, type)((typeId1 == type || typeId2 == type))
+#define IS_BATTLER_MULTITYPE(typeId1, typeId2)((typeId1 != typeId2))
+
 #define SET_BATTLER_TYPE(battlerId, type)   \
 {                                           \
     gBattleMons[battlerId].type1 = type;    \
