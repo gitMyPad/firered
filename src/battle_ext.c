@@ -200,7 +200,7 @@ void BattleExtension_CheckImmuneAbilities(void)
 {
     u8 flags        = 0;
     s32 i           = 0;
-    u8 effectCount  = 3;
+    u8 effectCount  = NORMAL_DMG_COUNTER;
     u8 moveType;
 
     if (gCurrentMove == MOVE_STRUGGLE || !gBattleMoves[gCurrentMove].power)
@@ -230,10 +230,10 @@ void BattleExtension_CheckImmuneAbilities(void)
             gProtectStructs[gBattlerAttacker].targetNotAffected = 1;
             break;
         }
-        if (effectCount == 3)
+        if (effectCount == NORMAL_DMG_COUNTER)
             break;
 
-        if (effectCount < 3)
+        if (effectCount < NORMAL_DMG_COUNTER)
         {
             // Not very effective has a flagbit value of 2, apparently.
             flags |= 2;
@@ -280,15 +280,13 @@ static u8 GetTypeEffectByTypeRaw(u8 *effectCount, u8 atkType, u8 defType)
     return *effectCount;
 }
 
-static void BattleExtension_TypeCalcHelper(u16 *move, u8 *moveType,
+static void BattleExtension_TypeCalcHelperWithKnownType(u16 *move, u8 *moveType,
                                            u8 *attackerType1, u8 *attackerType2,
                                            u8 *defenderType1, u8 *defenderType2,
-                                           u8 attacker, u8 target)
+                                           u8 attacker)
 {
     *attackerType1  = gBattleMons[attacker].type1;
     *attackerType2  = gBattleMons[attacker].type2;
-    *defenderType1  = gBattleMons[target].type1;
-    *defenderType2  = gBattleMons[target].type2;
 
     if (gBattleStruct->dynamicMoveType)
         *moveType   = gBattleStruct->dynamicMoveType & DYNAMIC_TYPE_MASK;
@@ -296,6 +294,33 @@ static void BattleExtension_TypeCalcHelper(u16 *move, u8 *moveType,
         *moveType   = *attackerType1;
     else
         *moveType = gBattleMoves[*move].type;
+}
+
+static void BattleExtension_TypeCalcHelper(u16 *move, u8 *moveType,
+                                           u8 *attackerType1, u8 *attackerType2,
+                                           u8 *defenderType1, u8 *defenderType2,
+                                           u8 attacker, u8 target)
+{
+    *defenderType1  = gBattleMons[target].type1;
+    *defenderType2  = gBattleMons[target].type2;
+    BattleExtension_TypeCalcHelperWithKnownType(move, moveType,
+                                                attackerType1, attackerType2,
+                                                defenderType1, defenderType2,
+                                                attacker);
+
+    // Iron Shell will adopt the STEEL type whenever
+    // the defender takes a super effective hit.
+    if (gBattleMons[target].ability == ABILITY_IRON_SHELL)
+    {
+        if ((GET_TYPE_EFFECTIVENESS(*moveType, *defenderType1) == TYPE_MUL_SUPER_EFFECTIVE) &&
+            (*defenderType1 != TYPE_STEEL))
+            *defenderType1  = TYPE_STEEL;
+
+        if ((*defenderType2 != *defenderType1) &&
+            (GET_TYPE_EFFECTIVENESS(*moveType, *defenderType2) == TYPE_MUL_SUPER_EFFECTIVE) &&
+            (*defenderType2 != TYPE_STEEL))
+            *defenderType2  = TYPE_STEEL;
+    }
 
     // Foresight overrides the ghost type immunity from
     // Normal and Fighting type attacks.
@@ -319,10 +344,11 @@ u8 GetTypeEffectivenessByType(u8 *effectCount, u8 atkType, u8 defType)
     return GetTypeEffectByTypeRaw(effectCount, atkType, defType);
 }
 
-void BattleExtension_TypeCalc(u16 *move, u8 *attacker, u8 *target)
+void BattleExtension_TypeCalcParam5(u16 *move, u8 *attacker, u8 *target, u8 *battleFlag,
+                                    bool8 updateBattleState)
 {
     s32 i               = 0;
-    u8 effectCount      = 3;
+    u8 effectCount      = NORMAL_DMG_COUNTER;
     u8 moveType;
     u8 attackerType1, attackerType2;
     u8 defenderType1, defenderType2;
@@ -342,23 +368,27 @@ void BattleExtension_TypeCalc(u16 *move, u8 *attacker, u8 *target)
     if ((gBattleMons[*target].ability == ABILITY_LEVITATE) && 
         (moveType == TYPE_GROUND))
     {
-        gLastUsedAbility                = gBattleMons[*target].ability;
-        gMoveResultFlags                |= (MOVE_RESULT_MISSED | MOVE_RESULT_DOESNT_AFFECT_FOE);
-        gLastLandedMoves[*target]       = 0;
-        gLastHitByType[*target]         = 0;
-        gBattleCommunication[MISS_TYPE] = B_MSG_GROUND_MISS;
-        RecordAbilityBattle(*target, gLastUsedAbility);
+        if (updateBattleState)
+            gLastUsedAbility                = gBattleMons[*target].ability;
+        (*battleFlag)                      |= (MOVE_RESULT_MISSED | MOVE_RESULT_DOESNT_AFFECT_FOE);
+
+        if (updateBattleState)
+        {
+            gLastLandedMoves[*target]       = 0;
+            gLastHitByType[*target]         = 0;
+            gBattleCommunication[MISS_TYPE] = B_MSG_GROUND_MISS;
+            RecordAbilityBattle(*target, gLastUsedAbility);
+        }
         goto finalize_flags;
     }
 
     GetTypeEffectivenessByType(&effectCount, moveType, defenderType1);
     if (!(IS_BATTLER_MULTITYPE(defenderType1, defenderType2)))
-        goto finalize_flags;
+        goto check_soft_shell;
 
     GetTypeEffectivenessByType(&effectCount, moveType, defenderType2);
 
-// Just a quirky jump here.
-touch_grass:
+check_soft_shell:
     // Check for Soft Shell (and block it if Mold Breaker is ever implemented).
     if (gBattleMons[*target].ability == ABILITY_SOFT_SHELL)
     {
@@ -375,8 +405,11 @@ touch_grass:
     // Check if the move is a status move before writing the flags.
     if (((gBattleMoves[*move].targetFlags & MOVETARGET_MASK) == 
           MOVETARGET_FLAG_STATUS) && 
-        ((effectCount != 3) && (effectCount != 0)))
-        effectCount = 3;
+        ((effectCount != NORMAL_DMG_COUNTER) && 
+         (effectCount != 0)))
+    {
+        effectCount = NORMAL_DMG_COUNTER;
+    }
         
     // Types determined. Write flags.
 finalize_flags:
@@ -385,41 +418,63 @@ finalize_flags:
         // Move has no effect
         if (effectCount == 0)
         {
-            gMoveResultFlags |= MOVE_RESULT_DOESNT_AFFECT_FOE;
-            gMoveResultFlags &= ~MOVE_RESULT_NOT_VERY_EFFECTIVE;
-            gMoveResultFlags &= ~MOVE_RESULT_SUPER_EFFECTIVE;
+            (*battleFlag) |= MOVE_RESULT_DOESNT_AFFECT_FOE;
+            (*battleFlag) &= ~MOVE_RESULT_NOT_VERY_EFFECTIVE;
+            (*battleFlag) &= ~MOVE_RESULT_SUPER_EFFECTIVE;
             break;
         }
-        if (effectCount == 3)
+        if (effectCount == NORMAL_DMG_COUNTER)
             break;
 
-        if (effectCount < 3)
+        if (effectCount < NORMAL_DMG_COUNTER)
         {
-            if (!(gMoveResultFlags & MOVE_RESULT_NOT_VERY_EFFECTIVE))
-                gMoveResultFlags |= MOVE_RESULT_NOT_VERY_EFFECTIVE;
+            if (!((*battleFlag) & MOVE_RESULT_NOT_VERY_EFFECTIVE))
+                (*battleFlag) |= MOVE_RESULT_NOT_VERY_EFFECTIVE;
         }
         else
         {
-            if (!(gMoveResultFlags & MOVE_RESULT_SUPER_EFFECTIVE))
-                gMoveResultFlags |= MOVE_RESULT_SUPER_EFFECTIVE;
+            if (!((*battleFlag) & MOVE_RESULT_SUPER_EFFECTIVE))
+                (*battleFlag) |= MOVE_RESULT_SUPER_EFFECTIVE;
         }
-        effectCount = 3;
+        effectCount = NORMAL_DMG_COUNTER;
     }
 
     if (gBattleMons[*target].ability == ABILITY_WONDER_GUARD && 
         AttacksThisTurn(*attacker, gCurrentMove) == 2 && 
-        (!(gMoveResultFlags & MOVE_RESULT_SUPER_EFFECTIVE))
+        (!((*battleFlag) & MOVE_RESULT_SUPER_EFFECTIVE))
         && gBattleMoves[gCurrentMove].power)
     {
-        gLastUsedAbility = ABILITY_WONDER_GUARD;
-        gMoveResultFlags |= MOVE_RESULT_MISSED;
-        gLastLandedMoves[*target] = 0;
-        gLastHitByType[*target] = 0;
-        gBattleCommunication[MISS_TYPE] = B_MSG_AVOIDED_DMG;
-        RecordAbilityBattle(*target, gLastUsedAbility);
+        if (updateBattleState)
+            gLastUsedAbility            = ABILITY_WONDER_GUARD;
+
+        (*battleFlag)                  |= MOVE_RESULT_MISSED;
+
+        if (updateBattleState)
+        {
+            gLastLandedMoves[*target]   = 0;
+            gLastHitByType[*target]     = 0;
+            gBattleCommunication[MISS_TYPE] = B_MSG_AVOIDED_DMG;
+            RecordAbilityBattle(*target, gLastUsedAbility);
+        }
     }
-    if (gMoveResultFlags & MOVE_RESULT_DOESNT_AFFECT_FOE)
+    if ((updateBattleState) &&
+        (*battleFlag) & MOVE_RESULT_DOESNT_AFFECT_FOE)
         gProtectStructs[*attacker].targetNotAffected = 1;
+}
+
+void BattleExtension_TypeCalcWithDefType(u16 *move, u8 *attacker, u8 targDef1, u8 targDef2, u8 *battleFlag, bool8 updateBattleState)
+{
+    u8 moveType;
+    u8 attackerType1, attackerType2;
+
+    BattleExtension_TypeCalcHelperWithKnownType(move, &moveType, &attackerType1,
+                                                &attackerType2, &targDef1,
+                                                &targDef2, *attacker);
+}
+
+void BattleExtension_TypeCalc(u16 *move, u8 *attacker, u8 *target)
+{
+    BattleExtension_TypeCalcParam5(move, attacker, target, &gMoveResultFlags, TRUE);
 }
 
 // ===============================
