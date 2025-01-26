@@ -2505,8 +2505,21 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (defenderHoldEffect == HOLD_EFFECT_DEEP_SEA_SCALE && defender->species == SPECIES_CLAMPERL)
         targSpdef *= 2;
 
-    if (attackerHoldEffect == HOLD_EFFECT_LIGHT_BALL && attacker->species == SPECIES_PIKACHU)
-        srcSpatk *= 2;
+    if (attackerHoldEffect == HOLD_EFFECT_LIGHT_BALL)
+    {
+        switch (attacker->species)
+        {
+            case SPECIES_PICHU:
+                srcSpatk  = (3 * srcSpatk) / 2;
+                break;
+            case SPECIES_PIKACHU:
+                srcSpatk *= 2;
+                break;
+            case SPECIES_RAICHU:
+                srcSpatk  = (5 * srcSpatk) / 2
+                break;
+        }
+    }
 
     if (defenderHoldEffect == HOLD_EFFECT_METAL_POWDER && defender->species == SPECIES_DITTO)
         targDef *= 2;
