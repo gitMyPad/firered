@@ -1853,15 +1853,26 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
 s32 MoveBattleBar(u8 battlerId, u8 healthboxSpriteId, u8 whichBar, u8 unused)
 {
     s32 currentBarValue;
+    u32 inc;
 
     if (whichBar == HEALTH_BAR)
     {
+        inc             = max(gBattleSpritesDataPtr->battleBars[battlerId].maxValue / 32, 1);
+        switch (gBattleMons[battlerId].species)
+        {
+        // Yeah, screw you if you're dealing with Chansey / Blissey.
+        case SPECIES_CHANSEY:
+        case SPECIES_BLISSEY:
+            inc         = 1;
+            break;
+        }
+
         currentBarValue = CalcNewBarValue(gBattleSpritesDataPtr->battleBars[battlerId].maxValue,
                                           gBattleSpritesDataPtr->battleBars[battlerId].oldValue,
                                           gBattleSpritesDataPtr->battleBars[battlerId].receivedValue,
                                           &gBattleSpritesDataPtr->battleBars[battlerId].currValue,
                                           B_HEALTHBAR_NUM_TILES,
-                                          max(gBattleSpritesDataPtr->battleBars[battlerId].maxValue / 32, 1));
+                                          inc);
     }
     else // exp bar
     {
