@@ -5716,7 +5716,7 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
     //      Handle iv increase
     // ======================================
     if ((holdEffect != HOLD_EFFECT_MACHO_BRACE) ||
-        (heldItem != ITEM_GENE_BRACE))
+        (heldItem != ITEM_SOUL_BRACE))
         return;
 
     for (i = 0; i < NUM_STATS; i++)
