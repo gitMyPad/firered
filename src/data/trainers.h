@@ -3479,7 +3479,10 @@ const struct Trainer gTrainers[] = {
         .trainerName = _("GIOVANNI"),
         .items = {},
         .doubleBattle = FALSE,
-        .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
+        .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE |
+                   AI_SCRIPT_TRY_TO_FAINT |
+                   AI_SCRIPT_CHECK_VIABILITY |
+                   AI_SCRIPT_HP_AWARE,
         .party = NO_ITEM_DEFAULT_MOVES(sParty_BossGiovanni),
     },
     [TRAINER_BOSS_GIOVANNI_2] = {
@@ -3489,7 +3492,10 @@ const struct Trainer gTrainers[] = {
         .trainerName = _("GIOVANNI"),
         .items = {},
         .doubleBattle = FALSE,
-        .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
+        .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE |
+                   AI_SCRIPT_TRY_TO_FAINT |
+                   AI_SCRIPT_CHECK_VIABILITY |
+                   AI_SCRIPT_HP_AWARE,
         .party = NO_ITEM_DEFAULT_MOVES(sParty_BossGiovanni2),
     },
     [TRAINER_LEADER_GIOVANNI] = {
@@ -3664,8 +3670,8 @@ const struct Trainer gTrainers[] = {
     },
     [TRAINER_TEAM_ROCKET_GRUNT_17] = {
         .trainerClass = TRAINER_CLASS_TEAM_ROCKET,
-        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_AQUA,
-        .trainerPic = TRAINER_PIC_ROCKET_GRUNT_M,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_AQUA | F_TRAINER_FEMALE,
+        .trainerPic = TRAINER_PIC_ROCKET_GRUNT_F,
         .trainerName = _("GRUNT"),
         .items = {},
         .doubleBattle = FALSE,
@@ -4463,14 +4469,15 @@ const struct Trainer gTrainers[] = {
         .party = NO_ITEM_DEFAULT_MOVES(sParty_ChannelerJody),
     },
     [TRAINER_CHANNELER_TAMMY] = {
-        .trainerClass = TRAINER_CLASS_CHANNELER,
+        .trainerClass = TRAINER_CLASS_ELITE_CHANNELER,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_SUSPICIOUS | F_TRAINER_FEMALE,
         .trainerPic = TRAINER_PIC_CHANNELER,
         .trainerName = _("TAMMY"),
         .items = {},
         .doubleBattle = FALSE,
-        .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_ChannelerTammy),
+        .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE | AI_SCRIPT_CHECK_VIABILITY
+                 | AI_SCRIPT_TRY_TO_FAINT,
+        .party = ITEM_CUSTOM_MOVES(sParty_ChannelerTammy),
     },
     [TRAINER_CHANNELER_RUTH] = {
         .trainerClass = TRAINER_CLASS_CHANNELER,

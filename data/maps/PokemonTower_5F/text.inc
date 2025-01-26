@@ -8,10 +8,13 @@ PokemonTower_5F_Text_TammyIntro::
     .string "your…all…$"
 
 PokemonTower_5F_Text_TammyDefeat::
-    .string "Gasp!$"
+    .string "Magnificent!$"
 
 PokemonTower_5F_Text_TammyPostBattle::
-    .string "I was under possession.$"
+    .string "That…was…a…splendid…\n"
+    .string "battle.\p"
+    .string "…Oh, you want me to stop\n"
+    .string "doing that?$"
 
 PokemonTower_5F_Text_RuthIntro::
     .string "You…shall…\n"
