@@ -86,9 +86,9 @@ IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogAccept::
 	special IsSelectedMonEgg
 	goto_if_eq VAR_RESULT, TRUE, IndigoPlateau_PokemonCenter_1F_EventScript_EVTrainer_DialogNoEgg
 	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerPrepNoEVs
+	fadescreen FADE_TO_BLACK
 	playfanfare MUS_MOVE_DELETED
 	waitfanfare
-	fadescreen FADE_TO_BLACK
 	special EVTrainerClearMonEVs
 	fadescreen FADE_FROM_BLACK
 	msgbox IndigoPlateau_PokemonCenter_1F_Text_EventScript_EVTrainerAfterAccept, MSGBOX_YESNO
