@@ -5631,7 +5631,7 @@ void AdjustFriendship(struct Pokemon *mon, u8 event)
 void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
 {
     u8 evs[NUM_STATS];
-    u16 evIncrease = 0;
+    u16 evIncrease = 0, ivIncrease = 0;
     u16 totalEVs = 0;
     u16 heldItem;
     u8 holdEffect;
@@ -5641,6 +5641,19 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
     {
         evs[i] = GetMonData(mon, MON_DATA_HP_EV + i, NULL);
         totalEVs += evs[i];
+    }
+
+    heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, NULL);
+    if (heldItem == ITEM_ENIGMA_BERRY)
+    {
+        if (gMain.inBattle)
+            holdEffect = gEnigmaBerries[0].holdEffect;
+        else
+            holdEffect = gSaveBlock1Ptr->enigmaBerry.holdEffect;
+    }
+    else
+    {
+        holdEffect = ItemId_GetHoldEffect(heldItem);
     }
 
     for (i = 0; i < NUM_STATS; i++)
@@ -5680,21 +5693,8 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
             break;
         }
 
-        heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, NULL);
-
-        if (heldItem == ITEM_ENIGMA_BERRY)
-        {
-            if (gMain.inBattle)
-                holdEffect = gEnigmaBerries[0].holdEffect;
-            else
-                holdEffect = gSaveBlock1Ptr->enigmaBerry.holdEffect;
-        }
-        else
-        {
-            holdEffect = ItemId_GetHoldEffect(heldItem);
-        }
-
-        if (holdEffect == HOLD_EFFECT_MACHO_BRACE)
+        if ((holdEffect == HOLD_EFFECT_MACHO_BRACE) &&
+            (heldItem == ITEM_MACHO_BRACE))
             evIncrease *= 2;
 
         if (totalEVs + (s16)evIncrease > MAX_TOTAL_EVS)
@@ -5711,6 +5711,48 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
         evs[i]      += evIncrease;
         totalEVs    += evIncrease;
         SetMonData(mon, MON_DATA_HP_EV + i, &evs[i]);
+    }
+    // ======================================
+    //      Handle iv increase
+    // ======================================
+    if ((holdEffect != HOLD_EFFECT_MACHO_BRACE) ||
+        (heldItem != ITEM_GENE_BRACE))
+        return;
+
+    for (i = 0; i < NUM_STATS; i++)
+    {
+        switch (i)
+        {
+        case STAT_HP:
+            ivIncrease = gSpeciesInfo[defeatedSpecies].evYield_HP;
+            break;
+        case STAT_ATK:
+            ivIncrease = gSpeciesInfo[defeatedSpecies].evYield_Attack;
+            break;
+        case STAT_DEF:
+            ivIncrease = gSpeciesInfo[defeatedSpecies].evYield_Defense;
+            break;
+        case STAT_SPEED:
+            ivIncrease = gSpeciesInfo[defeatedSpecies].evYield_Speed;
+            break;
+        case STAT_SPATK:
+            ivIncrease = gSpeciesInfo[defeatedSpecies].evYield_SpAttack;
+            break;
+        case STAT_SPDEF:
+            ivIncrease = gSpeciesInfo[defeatedSpecies].evYield_SpDefense;
+            break;
+        }
+
+        if (ivIncrease < 1)
+            continue;
+
+        if (GetMonData(mon, MON_DATA_HP_IV + i, NULL) + ivIncrease > MAX_PER_STAT_IVS)
+            ivIncrease  = MAX_PER_STAT_IVS;
+        else
+            ivIncrease  = GetMonData(mon, MON_DATA_HP_IV + i, NULL) +
+                          ivIncrease;
+
+        SetMonData(mon, MON_DATA_HP_IV + i, &ivIncrease);
     }
 }
 
