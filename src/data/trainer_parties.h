@@ -6442,10 +6442,10 @@ static const struct TrainerMonItemCustomMoves sParty_ChannelerTammy[] = {
     {
         .iv = 31,
         .lvl = 33,
-        .heldItem = ITEM_CHOICE_SPECS,
-        .species = SPECIES_GASTLY,
-        .moves = {MOVE_SHADOW_BALL, MOVE_SLUDGE_BOMB, MOVE_SILVER_WIND, 
-                  MOVE_HYPER_VOICE},
+        .heldItem   = ITEM_CHOICE_SPECS,
+        .species    = SPECIES_GENGAR,
+        .moves      = {MOVE_SHADOW_BALL, MOVE_SLUDGE_BOMB,          
+                       MOVE_SILVER_WIND, MOVE_HYPER_VOICE},
     },
     {
         .iv = 31,
@@ -6466,9 +6466,10 @@ static const struct TrainerMonItemCustomMoves sParty_ChannelerTammy[] = {
     {
         .iv = 31,
         .lvl = 33,
-        .heldItem = ITEM_CHESTO_BERRY,
+        .heldItem = ITEM_LEFTOVERS,
         .species = SPECIES_LAPRAS,
-        .moves = {MOVE_ICE_BEAM, MOVE_SURF, MOVE_REST, MOVE_SLEEP_TALK},
+        .moves = {MOVE_PROTECT, MOVE_SUBSTITUTE, MOVE_RECOVER, 
+                  MOVE_PERISH_SONG},
     },
     {
         .iv = 31,
