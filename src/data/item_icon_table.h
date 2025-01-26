@@ -399,7 +399,7 @@ static const u32 *const sItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_RUBY]           = {gItemIcon_Gem, gItemIconPalette_Ruby},
     [ITEM_SAPPHIRE]       = {gItemIcon_Gem, gItemIconPalette_Sapphire},
     [ITEM_CHOICE_SPECS]   = {gItemIcon_ChoiceSpecs, gItemIconPalette_ChoiceSpecs},
-    [ITEM_GENE_BRACE]     = {gItemIcon_MachoBrace, gItemIconPalette_MachoBrace},
+    [ITEM_SOUL_BRACE]     = {gItemIcon_SoulBrace, gItemIconPalette_SoulBrace},
     // Return to field arrow
     [ITEMS_COUNT]         = {gItemIcon_ReturnToFieldArrow, gItemIconPalette_ReturnToFieldArrow},
 };
