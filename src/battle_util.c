@@ -1834,7 +1834,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     }
                     break;
                 case ABILITY_SHED_SKIN:
-                    if ((gBattleMons[battler].status1 & STATUS1_ANY) && (Random() % 3) == 0)
+                    if ((gBattleMons[battler].status1 & STATUS1_ANY) /*&& (Random() % 3) == 0*/)
                     {
                         if (gBattleMons[battler].status1 & (STATUS1_POISON | STATUS1_TOXIC_POISON))
                             StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
@@ -1849,6 +1849,8 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         gBattleMons[battler].status1 = 0;
                         gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;  // fix nightmare glitch
                         gBattleScripting.battler = gActiveBattler = battler;
+                        gHpDealt   = gBattleMons[battler].maxHP;
+
                         BattleScriptPushCursorAndCallback(BattleScript_ShedSkinActivates);
                         BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, 4, &gBattleMons[battler].status1);
                         MarkBattlerForControllerExec(gActiveBattler);

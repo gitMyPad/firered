@@ -3955,6 +3955,12 @@ BattleScript_ShedSkinActivates::
 	printstring STRINGID_PKMNSXCUREDYPROBLEM
 	waitmessage B_WAIT_TIME_LONG
 	updatestatusicon BS_ATTACKER
+	negativedamagewithparam 33
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
+	healthbarupdate BS_ATTACKER
+	datahpupdate BS_ATTACKER
+	printstring STRINGID_PKMNGAINEDXHEALTH
+	waitmessage B_WAIT_TIME_LONG
 	end3
 
 BattleScript_WeatherFormChanges::

@@ -308,6 +308,7 @@ static void Cmd_subattackerhpbydmg(void);
 static void Cmd_removeattackerstatus1(void);
 static void Cmd_finishaction(void);
 static void Cmd_finishturn(void);
+static void Cmd_negativedamagewithparam(void);
 
 void (* const gBattleScriptingCommandsTable[])(void) =
 {
@@ -559,6 +560,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_removeattackerstatus1,                   //0xF5
     Cmd_finishaction,                            //0xF6
     Cmd_finishturn,                              //0xF7
+    Cmd_negativedamagewithparam,                 //0xF8
 };
 
 struct StatFractions
@@ -9724,4 +9726,14 @@ static void Cmd_finishturn(void)
 {
     gCurrentActionFuncId = B_ACTION_FINISHED;
     gCurrentTurnActionNumber = gBattlersCount;
+}
+
+static void Cmd_negativedamagewithparam(void)
+{
+    u8 multiplier   = T1_READ_8(++gBattlescriptCurrInstr);
+    gBattleMoveDamage = -(gHpDealt * multiplier) / 100;
+    if (gBattleMoveDamage == 0)
+        gBattleMoveDamage = -1;
+
+    gBattlescriptCurrInstr++;
 }
