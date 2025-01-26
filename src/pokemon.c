@@ -2509,15 +2509,15 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     {
         switch (attacker->species)
         {
-            case SPECIES_PICHU:
-                srcSpatk  = (3 * srcSpatk) / 2;
-                break;
-            case SPECIES_PIKACHU:
-                srcSpatk *= 2;
-                break;
-            case SPECIES_RAICHU:
-                srcSpatk  = (5 * srcSpatk) / 2
-                break;
+        case SPECIES_PICHU:
+            srcSpatk  = (3 * srcSpatk) / 2;
+            break;
+        case SPECIES_PIKACHU:
+            srcSpatk *= 2;
+            break;
+        case SPECIES_RAICHU:
+            srcSpatk  = (5 * srcSpatk) / 2;
+            break;
         }
     }
 
