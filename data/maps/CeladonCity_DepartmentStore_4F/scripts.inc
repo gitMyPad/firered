@@ -60,6 +60,8 @@ CeladonCity_DepartmentStore_4F_BattleItems::
 	.2byte ITEM_PP_MAX
 	.2byte ITEM_SITRUS_BERRY
 	.2byte ITEM_LEPPA_BERRY
+	.2byte ITEM_MACHO_BRACE
+	.2byte ITEM_GENE_BRACE
 	.2byte ITEM_NONE
 	release
 	end
