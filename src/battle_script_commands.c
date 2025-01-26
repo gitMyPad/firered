@@ -1341,16 +1341,18 @@ static void ModulateDmgByType2(u8 multiplier, u16 move, u8 *flags)
 
 u8 TypeCalc(u16 move, u8 attacker, u8 defender)
 {
-    s32 i = 0;
-    u8 flags = 0;
+    s32 i           = 0;
+    u8 flags        = 0;
     u8 moveType;
-    u8 effectCount = 3;
+    u8 effectCount  = 3;
 
     if (move == MOVE_STRUGGLE)
         return 0;
 
-    moveType = gBattleMoves[move].type;
+    BattleExtension_TypeCalcParam5(&move, &attacker, &defender, &flags, FALSE);
+    // moveType = gBattleMoves[move].type;
 
+    /*
     if ((move) == MOVE_RETURN || (move) == MOVE_FRUSTRATION)
     {
         moveType    = gBattleMons[attacker].type1;
@@ -1366,7 +1368,10 @@ u8 TypeCalc(u16 move, u8 attacker, u8 defender)
     GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[defender].type1);
     if (gBattleMons[defender].type2 != gBattleMons[defender].type1)
         GetTypeEffectivenessByType(&effectCount, moveType, gBattleMons[defender].type2);
+    */
 
+    // The flag variable is updated by BattleExtension_TypeCalcParam5
+    /*
     switch (effectCount)
     {
     case 0:
@@ -1382,13 +1387,17 @@ u8 TypeCalc(u16 move, u8 attacker, u8 defender)
         flags |= MOVE_RESULT_SUPER_EFFECTIVE;
         break;
     }
+    */
 
+    // Already calculated in BattleExtension_TypeCalcParam5
+    /*
     if (gBattleMons[defender].ability == ABILITY_LEVITATE &&
         moveType == TYPE_GROUND)
     {
         effectCount = 0;
         flags      |= (MOVE_RESULT_MISSED | MOVE_RESULT_DOESNT_AFFECT_FOE);
     }
+    */
 
     while (TRUE)
     {
@@ -1397,10 +1406,10 @@ u8 TypeCalc(u16 move, u8 attacker, u8 defender)
             gBattleMoveDamage = 0;
             break;
         }
-        if (effectCount == 3)
+        if (effectCount == NORMAL_DMG_COUNTER)
             break;
 
-        if (effectCount < 3)
+        if (effectCount < NORMAL_DMG_COUNTER)
         {
             gBattleMoveDamage = gBattleMoveDamage * TYPE_MUL_NOT_EFFECTIVE / 10;
             effectCount++;
@@ -1425,17 +1434,17 @@ u8 TypeCalc(u16 move, u8 attacker, u8 defender)
 
 u8 AI_TypeCalc(u16 move, u16 targetSpecies, u8 targetAbility)
 {
-    s32 i = 0;
-    u8 flags = 0;
-    u8 type1 = gSpeciesInfo[targetSpecies].types[0], type2 = gSpeciesInfo[targetSpecies].types[1];
+    s32 i           = 0;
+    u8 flags        = 0;
+    u8 type1        = gSpeciesInfo[targetSpecies].types[0], 
+       type2        = gSpeciesInfo[targetSpecies].types[1];
     u8 moveType;
-    u8 effectCount = 3;
+    u8 effectCount  = NORMAL_DMG_COUNTER;
 
     if (move == MOVE_STRUGGLE)
         return 0;
 
-    moveType = gBattleMoves[move].type;
-
+    /*
     if ((move) == MOVE_RETURN || (move) == MOVE_FRUSTRATION)
     {
         moveType    = gBattleMons[gBattlerAttacker].type1;
@@ -1444,6 +1453,25 @@ u8 AI_TypeCalc(u16 move, u16 targetSpecies, u8 targetAbility)
     GetTypeEffectivenessByType(&effectCount, moveType, type1);
     if (type2 != type1)
         GetTypeEffectivenessByType(&effectCount, moveType, type2);
+    */
+
+    // Iron Shell will adopt the STEEL type whenever
+    // the defender takes a super effective hit.
+    if (targetAbility == ABILITY_IRON_SHELL)
+    {
+        if ((GET_TYPE_EFFECTIVENESS(moveType, type1) == TYPE_MUL_SUPER_EFFECTIVE) &&
+            (type1 != TYPE_STEEL))
+            type1  = TYPE_STEEL;
+
+        if ((type2 != type1) &&
+            (GET_TYPE_EFFECTIVENESS(moveType, type2) == TYPE_MUL_SUPER_EFFECTIVE) &&
+            (type2 != TYPE_STEEL))
+            type2  = TYPE_STEEL;
+    }
+
+    BattleExtension_TypeCalcWithDefType(&move, &gBattlerAttacker,
+                                        type1, type2,
+                                        &flags, FALSE);
 
     if (targetAbility == ABILITY_LEVITATE && moveType == TYPE_GROUND)
     {
@@ -1458,10 +1486,10 @@ u8 AI_TypeCalc(u16 move, u16 targetSpecies, u8 targetAbility)
             gBattleMoveDamage = 0;
             break;
         }
-        if (effectCount == 3)
+        if (effectCount == NORMAL_DMG_COUNTER)
             break;
 
-        if (effectCount < 3)
+        if (effectCount < NORMAL_DMG_COUNTER)
         {
             gBattleMoveDamage = gBattleMoveDamage * TYPE_MUL_NOT_EFFECTIVE / 10;
             effectCount++;
