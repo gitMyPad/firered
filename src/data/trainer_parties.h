@@ -6795,16 +6795,21 @@ static const struct TrainerMonNoItemDefaultMoves sParty_CamperFlint[] = {
     },
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_PicnickerMissy[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_EliteChannelerMissy[] = {
     {
         .iv = 0,
-        .lvl = 31,
+        .lvl = 45,
         .species = SPECIES_GOLDEEN,
     },
     {
         .iv = 0,
-        .lvl = 31,
+        .lvl = 45,
         .species = SPECIES_SEAKING,
+    },
+    {
+        .iv = 80,
+        .lvl = 45,
+        .species = SPECIES_GASTLY,
     },
 };
 
@@ -9908,29 +9913,44 @@ static const struct TrainerMonNoItemDefaultMoves sParty_SwimmerMaleDarrin2[] = {
     },
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_PicnickerMissy2[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_EliteChannelerMissy2[] = {
     {
-        .iv = 80,
-        .lvl = 49,
+        .iv = 160,
+        .lvl = 55,
         .species = SPECIES_SEAKING,
     },
     {
-        .iv = 80,
-        .lvl = 49,
+        .iv = 160,
+        .lvl = 55,
         .species = SPECIES_SEAKING,
+    },
+    {
+        .iv = 160,
+        .lvl = 55,
+        .species = SPECIES_HAUNTER,
     },
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_PicnickerMissy3[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_EliteChannelerMissy3[] = {
     {
-        .iv = 120,
-        .lvl = 54,
+        .iv = 250,
+        .lvl = 70,
         .species = SPECIES_SEAKING,
     },
     {
-        .iv = 120,
-        .lvl = 54,
-        .species = SPECIES_SEAKING,
+        .iv = 250,
+        .lvl = 70,
+        .species = SPECIES_GYARADOS,
+    },
+    {
+        .iv = 250,
+        .lvl = 70,
+        .species = SPECIES_GENGAR,
+    },
+    {
+        .iv = 250,
+        .lvl = 70,
+        .species = SPECIES_MISDREAVUS,
     },
 };
 

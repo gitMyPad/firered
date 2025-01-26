@@ -475,7 +475,7 @@
 #define TRAINER_PICNICKER_GWEN                   469
 #define TRAINER_BIKER_VIRGIL                     470
 #define TRAINER_CAMPER_FLINT                     471
-#define TRAINER_PICNICKER_MISSY                  472
+#define TRAINER_ELITE_CHANNELER_MISSY            472
 #define TRAINER_PICNICKER_IRENE                  473
 #define TRAINER_PICNICKER_DANA                   474
 #define TRAINER_PICNICKER_ARIANA                 475
@@ -687,8 +687,8 @@
 #define TRAINER_BIRD_KEEPER_JACOB_3              681
 #define TRAINER_SWIMMER_FEMALE_ALICE_2           682
 #define TRAINER_SWIMMER_MALE_DARRIN_2            683
-#define TRAINER_PICNICKER_MISSY_2                684
-#define TRAINER_PICNICKER_MISSY_3                685
+#define TRAINER_ELITE_CHANNELER_MISSY_2                684
+#define TRAINER_ELITE_CHANNELER_MISSY_3                685
 #define TRAINER_FISHERMAN_WADE_2                 686
 #define TRAINER_SWIMMER_MALE_JACK_2              687
 #define TRAINER_SIS_AND_BRO_LIL_IAN_2            688

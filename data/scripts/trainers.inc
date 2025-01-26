@@ -1823,14 +1823,14 @@ Route20_EventScript_RogerRematch::
 	end
 
 Route20_EventScript_Missy::
-	trainerbattle_single TRAINER_PICNICKER_MISSY, Route20_Text_MissyIntro, Route20_Text_MissyDefeat
+	trainerbattle_single TRAINER_ELITE_CHANNELER_MISSY, Route20_Text_MissyIntro, Route20_Text_MissyDefeat
 	specialvar VAR_RESULT, ShouldTryRematchBattle
 	goto_if_eq VAR_RESULT, TRUE, Route20_EventScript_MissyRematch
 	msgbox Route20_Text_MissyPostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route20_EventScript_MissyRematch::
-	trainerbattle_rematch TRAINER_PICNICKER_MISSY, Route20_Text_MissyRematchIntro, Route20_Text_MissyDefeat
+	trainerbattle_rematch TRAINER_ELITE_CHANNELER_MISSY, Route20_Text_MissyRematchIntro, Route20_Text_MissyDefeat
 	msgbox Route20_Text_MissyPostBattle, MSGBOX_AUTOCLOSE
 	end
 

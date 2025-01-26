@@ -4719,15 +4719,15 @@ const struct Trainer gTrainers[] = {
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
         .party = NO_ITEM_DEFAULT_MOVES(sParty_CamperFlint),
     },
-    [TRAINER_PICNICKER_MISSY] = {
-        .trainerClass = TRAINER_CLASS_PICNICKER,
+    [TRAINER_ELITE_CHANNELER_MISSY] = {
+        .trainerClass = TRAINER_CLASS_ELITE_CHANNELER,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_GIRL | F_TRAINER_FEMALE,
-        .trainerPic = TRAINER_PIC_PICNICKER,
+        .trainerPic = TRAINER_PIC_CHANNELER,
         .trainerName = _("MISSY"),
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_PicnickerMissy),
+        .party = NO_ITEM_DEFAULT_MOVES(sParty_EliteChannelerMissy),
     },
     [TRAINER_PICNICKER_IRENE] = {
         .trainerClass = TRAINER_CLASS_PICNICKER,
@@ -6839,25 +6839,25 @@ const struct Trainer gTrainers[] = {
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
         .party = NO_ITEM_DEFAULT_MOVES(sParty_SwimmerMaleDarrin2),
     },
-    [TRAINER_PICNICKER_MISSY_2] = {
-        .trainerClass = TRAINER_CLASS_PICNICKER,
+    [TRAINER_ELITE_CHANNELER_MISSY_2] = {
+        .trainerClass = TRAINER_CLASS_ELITE_CHANNELER,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_GIRL | F_TRAINER_FEMALE,
-        .trainerPic = TRAINER_PIC_PICNICKER,
+        .trainerPic = TRAINER_PIC_CHANNELER,
         .trainerName = _("MISSY"),
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_PicnickerMissy2),
+        .party = NO_ITEM_DEFAULT_MOVES(sParty_EliteChannelerMissy2),
     },
-    [TRAINER_PICNICKER_MISSY_3] = {
-        .trainerClass = TRAINER_CLASS_PICNICKER,
+    [TRAINER_ELITE_CHANNELER_MISSY_3] = {
+        .trainerClass = TRAINER_CLASS_ELITE_CHANNELER,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_GIRL | F_TRAINER_FEMALE,
-        .trainerPic = TRAINER_PIC_PICNICKER,
+        .trainerPic = TRAINER_PIC_CHANNELER,
         .trainerName = _("MISSY"),
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_PicnickerMissy3),
+        .party = NO_ITEM_DEFAULT_MOVES(sParty_EliteChannelerMissy3),
     },
     [TRAINER_FISHERMAN_WADE_2] = {
         .trainerClass = TRAINER_CLASS_FISHERMAN,
