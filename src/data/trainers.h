@@ -572,15 +572,15 @@ const struct Trainer gTrainers[] = {
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
         .party = NO_ITEM_DEFAULT_MOVES(sParty_Collector),
     },
-    [TRAINER_WALLY] = {
-        .trainerClass = TRAINER_CLASS_PKMN_TRAINER,
+    [TRAINER_OLD_MAN_EUGENE] = {
+        .trainerClass = TRAINER_CLASS_GAMER,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
-        .trainerPic = TRAINER_PIC_WALLY,
-        .trainerName = _(""),
+        .trainerPic = TRAINER_PIC_GAMER,
+        .trainerName = _("EUGENE"),
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_SCRIPT_CHECK_BAD_MOVE,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_Wally),
+        .party = NO_ITEM_DEFAULT_MOVES(sParty_OldManEugene),
     },
     [TRAINER_BRENDAN] = {
         .trainerClass = TRAINER_CLASS_PKMN_TRAINER,

@@ -123,3 +123,20 @@ void EVTrainerClearMonEVs(void)
     SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPDEF_EV, &value);
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }
+
+void IVEugenicsManClearMonIVs(void)
+{
+    s32 value   = 0;
+
+    // Sanity check.
+    if (GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_IS_EGG))
+        return;
+
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HP_IV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_ATK_IV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_DEF_IV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPEED_IV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPATK_IV, &value);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPDEF_IV, &value);
+    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
+}

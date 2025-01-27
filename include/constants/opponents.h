@@ -60,7 +60,9 @@
 #define TRAINER_BOARDER_M                         55
 #define TRAINER_BOARDER_F                         56
 #define TRAINER_COLLECTOR                         57
-#define TRAINER_WALLY                             58
+// Reuse TRAINER_WALLY as OLD MAN EUGENE
+// #define TRAINER_WALLY                             58
+#define TRAINER_OLD_MAN_EUGENE                    58
 #define TRAINER_BRENDAN                           59
 #define TRAINER_BRENDAN_2                         60
 #define TRAINER_BRENDAN_3                         61
