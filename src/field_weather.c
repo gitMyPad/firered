@@ -890,8 +890,8 @@ void LoadCustomWeatherSpritePalette(const u16 *palette)
 static void LoadDroughtWeatherPalette(u8 *gammaIndexPtr, u8 *a1)
 {
     // Dummied out in FRLG
-    // *gammaIndexPtr = 0x20;
-    // *a1 = 0x20;
+    *gammaIndexPtr = 0x20;
+    *a1 = 0x20;
 }
 
 void ResetDroughtWeatherPaletteLoading(void)
