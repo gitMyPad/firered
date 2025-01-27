@@ -12743,7 +12743,7 @@
               {
                 "min_level": 32,
                 "max_level": 32,
-                "species": "SPECIES_SPEAROW"
+                "species": "SPECIES_TANGELA"
               },
               {
                 "min_level": 33,
@@ -12753,7 +12753,7 @@
               {
                 "min_level": 31,
                 "max_level": 31,
-                "species": "SPECIES_SPEAROW"
+                "species": "SPECIES_SLOWBRO"
               },
               {
                 "min_level": 35,
@@ -12763,42 +12763,42 @@
               {
                 "min_level": 36,
                 "max_level": 36,
-                "species": "SPECIES_FEAROW"
+                "species": "SPECIES_SLOWBRO"
               },
               {
                 "min_level": 31,
                 "max_level": 31,
-                "species": "SPECIES_MEOWTH"
+                "species": "SPECIES_SUDOWOODO"
               },
               {
                 "min_level": 38,
                 "max_level": 38,
-                "species": "SPECIES_FEAROW"
+                "species": "SPECIES_PINECO"
               },
               {
                 "min_level": 31,
                 "max_level": 31,
-                "species": "SPECIES_PSYDUCK"
+                "species": "SPECIES_PINECO"
               },
               {
                 "min_level": 40,
                 "max_level": 40,
-                "species": "SPECIES_FEAROW"
+                "species": "SPECIES_SKARMORY"
               },
               {
                 "min_level": 37,
                 "max_level": 37,
-                "species": "SPECIES_PERSIAN"
+                "species": "SPECIES_SKARMORY"
               },
               {
                 "min_level": 40,
                 "max_level": 40,
-                "species": "SPECIES_FEAROW"
+                "species": "SPECIES_SKARMORY"
               },
               {
                 "min_level": 40,
                 "max_level": 40,
-                "species": "SPECIES_PERSIAN"
+                "species": "SPECIES_SKARMORY"
               }
             ]
           },
