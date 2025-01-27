@@ -5635,7 +5635,9 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
     u16 totalEVs = 0;
     u16 heldItem;
     u8 holdEffect;
+    u8 badges   = GetBadgeCount();
     int i;
+
 
     for (i = 0; i < NUM_STATS; i++)
     {
@@ -5670,6 +5672,12 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
             multiplier = 2;
         else
             multiplier = 1;
+
+        if (badges >= 2)
+            multiplier *= 2;
+
+        if (badges >= 6)
+            multiplier *= 2;
 
         switch (i)
         {
@@ -5721,6 +5729,13 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
 
     for (i = 0; i < NUM_STATS; i++)
     {
+        u8 multiplier   = 1;
+        if (badges >= 4)
+            multiplier *= 2;
+
+        if (badges >= 8)
+            multiplier *= 2;
+
         switch (i)
         {
         case STAT_HP:
@@ -5746,6 +5761,7 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
         if (ivIncrease < 1)
             continue;
 
+        evIncrease  *= multiplier;        
         if (GetMonData(mon, MON_DATA_HP_IV + i, NULL) + ivIncrease > MAX_PER_STAT_IVS)
             ivIncrease  = MAX_PER_STAT_IVS;
         else
