@@ -159,6 +159,11 @@ CinnabarIsland_Gym_Text_PokemonQuizRules::
     .string "Then get it right!\n"
     .string "Here we go!$"
 
+CinnabarIsland_Gym_Text_PokemonQuizRules2::
+    .string "POKéMON Quiz!\p"
+    .string "Get it right, and well… you know\n"
+    .string "the rest.$"
+
 CinnabarIsland_Gym_Text_QuizQuestion1::
     .string "CATERPIE evolves into METAPOD?$"
 

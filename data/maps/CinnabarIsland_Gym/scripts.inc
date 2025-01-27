@@ -304,7 +304,7 @@ CinnabarIsland_Gym_EventScript_Quiz2Right::
 	end
 
 CinnabarIsland_Gym_EventScript_Quiz2::
-	msgbox CinnabarIsland_Gym_Text_PokemonQuizRules
+	msgbox CinnabarIsland_Gym_Text_PokemonQuizRules2
 	msgbox CinnabarIsland_Gym_Text_QuizQuestion2, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, CinnabarIsland_Gym_EventScript_Quiz2Incorrect
 	goto_if_eq VAR_RESULT, NO, CinnabarIsland_Gym_EventScript_Quiz2Correct
@@ -385,7 +385,6 @@ CinnabarIsland_Gym_EventScript_Quiz3Right::
 	end
 
 CinnabarIsland_Gym_EventScript_Quiz3::
-	msgbox CinnabarIsland_Gym_Text_PokemonQuizRules
 	msgbox CinnabarIsland_Gym_Text_QuizQuestion3, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, CinnabarIsland_Gym_EventScript_Quiz3Incorrect
 	goto_if_eq VAR_RESULT, NO, CinnabarIsland_Gym_EventScript_Quiz3Correct
@@ -457,7 +456,6 @@ CinnabarIsland_Gym_EventScript_Quiz4Right::
 	end
 
 CinnabarIsland_Gym_EventScript_Quiz4::
-	msgbox CinnabarIsland_Gym_Text_PokemonQuizRules
 	msgbox CinnabarIsland_Gym_Text_QuizQuestion4, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, CinnabarIsland_Gym_EventScript_Quiz4Incorrect
 	goto_if_eq VAR_RESULT, NO, CinnabarIsland_Gym_EventScript_Quiz4Correct
@@ -529,7 +527,6 @@ CinnabarIsland_Gym_EventScript_Quiz5Right::
 	end
 
 CinnabarIsland_Gym_EventScript_Quiz5::
-	msgbox CinnabarIsland_Gym_Text_PokemonQuizRules
 	msgbox CinnabarIsland_Gym_Text_QuizQuestion5, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, CinnabarIsland_Gym_EventScript_Quiz5Correct
 	goto_if_eq VAR_RESULT, NO, CinnabarIsland_Gym_EventScript_Quiz5Incorrect
@@ -601,7 +598,6 @@ CinnabarIsland_Gym_EventScript_Quiz6Right::
 	end
 
 CinnabarIsland_Gym_EventScript_Quiz6::
-	msgbox CinnabarIsland_Gym_Text_PokemonQuizRules
 	msgbox CinnabarIsland_Gym_Text_QuizQuestion6, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, CinnabarIsland_Gym_EventScript_Quiz6Incorrect
 	goto_if_eq VAR_RESULT, NO, CinnabarIsland_Gym_EventScript_Quiz6Correct
