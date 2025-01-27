@@ -5761,7 +5761,7 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
         if (ivIncrease < 1)
             continue;
 
-        evIncrease  *= multiplier;        
+        ivIncrease  *= multiplier;        
         if (GetMonData(mon, MON_DATA_HP_IV + i, NULL) + ivIncrease > MAX_PER_STAT_IVS)
             ivIncrease  = MAX_PER_STAT_IVS;
         else
