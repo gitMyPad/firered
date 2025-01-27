@@ -7762,18 +7762,28 @@ static const struct TrainerMonNoItemCustomMoves sParty_ScientistGideon[] = {
 static const struct TrainerMonNoItemDefaultMoves sParty_SwimmerFemaleAmara[] = {
     {
         .iv = 0,
-        .lvl = 36,
-        .species = SPECIES_SEEL,
+        .lvl = 45,
+        .species = SPECIES_SLOWBRO,
     },
     {
         .iv = 0,
-        .lvl = 36,
-        .species = SPECIES_SEEL,
+        .lvl = 45,
+        .species = SPECIES_SEALEO,
     },
     {
         .iv = 0,
-        .lvl = 36,
-        .species = SPECIES_DEWGONG,
+        .lvl = 45,
+        .species = SPECIES_SUDOWOODO,
+    },
+    {
+        .iv = 0,
+        .lvl = 45,
+        .species = SPECIES_FORRETRESS,
+    },
+    {
+        .iv = 0,
+        .lvl = 45,
+        .species = SPECIES_WAILORD,
     },
 };
 
