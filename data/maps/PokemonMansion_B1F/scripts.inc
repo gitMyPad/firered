@@ -1,9 +1,14 @@
+.set LOCALID_EUGENE, 7
+
 PokemonMansion_B1F_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, PokemonMansion_B1F_OnLoad
 	.byte 0
 
 PokemonMansion_B1F_OnLoad::
 	call_if_set FLAG_POKEMON_MANSION_SWITCH_STATE, PokemonMansion_EventScript_PressSwitch_B1F
+	goto_if_unset FLAG_MANSION_TALKED_WITH_INSANE_OLD_MAN, PokemonMansion_B1F_OnLoadEnd
+	removeobject LOCALID_EUGENE
+PokemonMansion_B1F_OnLoadEnd::
 	end
 
 PokemonMansion_B1F_EventScript_Statue::
@@ -28,4 +33,45 @@ PokemonMansion_B1F_EventScript_Lewis::
 PokemonMansion_B1F_EventScript_Ivan::
 	trainerbattle_single TRAINER_SCIENTIST_IVAN, PokemonMansion_B1F_Text_IvanIntro, PokemonMansion_B1F_Text_IvanDefeat
 	msgbox PokemonMansion_B1F_Text_IvanPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+PokemonMansion_B1F_EventScript_Eugene::
+	trainerbattle_single TRAINER_OLD_MAN_EUGENE, PokemonMansion_B1F_Text_EugeneIntro, PokemonMansion_B1F_Text_EugeneDefeat
+	goto_if_unset FLAG_MANSION_TALKED_WITH_INSANE_OLD_MAN, PokemonMansion_B1F_EventScript_EugenePostBattle
+	goto PokemonMansion_B1F_EventScript_EugeneEugenics
+	end
+
+PokemonMansion_B1F_EventScript_EugenePostBattle::
+	setflag FLAG_MANSION_TALKED_WITH_INSANE_OLD_MAN
+	msgbox PokemonMansion_B1F_Text_EugenePostBattle, MSGBOX_AUTOCLOSE
+	fadescreen FADE_TO_BLACK
+	removeobject LOCALID_EUGENE
+	fadescreen FADE_FROM_BLACK
+	end
+
+PokemonMansion_B1F_EventScript_EugeneEugenics::
+	msgbox PokemonMansion_B1F_Text_EugeneEugenics, MSGBOX_NPC
+	special ChoosePartyMon
+	waitstate
+	goto_if_ge VAR_0x8004, PARTY_SIZE, PokemonMansion_B1F_EventScript_EugeneEugenicsDeclined
+	special IsSelectedMonEgg
+	goto_if_eq VAR_RESULT, TRUE, PokemonMansion_B1F_EventScript_EugeneEugenicsBadEgg
+	msgbox PokemonMansion_B1F_Text_IVEugenicsPrepNoIVs
+	fadescreen FADE_TO_BLACK
+	playfanfare MUS_MOVE_DELETED
+	waitfanfare
+	special IVEugenicsManClearMonIVs
+	fadescreen FADE_FROM_BLACK
+	msgbox PokemonMansion_B1F_Text_EugeneEugenicsComplete
+	release
+	end
+
+PokemonMansion_B1F_EventScript_EugeneEugenicsDeclined::
+	msgbox PokemonMansion_B1F_Text_EugeneEugenicsDeclined
+	release
+	end
+
+PokemonMansion_B1F_EventScript_EugeneEugenicsBadEgg::
+	msgbox PokemonMansion_B1F_Text_EugeneEugenicsBadEgg
+	release
 	end

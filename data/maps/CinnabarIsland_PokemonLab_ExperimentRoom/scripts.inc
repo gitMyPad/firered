@@ -1,9 +1,17 @@
 .equ HELIX_FOSSIL, 1
 .equ DOME_FOSSIL,  2
 .equ OLD_AMBER,    3
+.set LOCALID_EUGENE, 3
 
 CinnabarIsland_PokemonLab_ExperimentRoom_MapScripts::
+	map_script MAP_SCRIPT_ON_LOAD, CinnabarIsland_PokemonLab_ExperimentRoom_OnLoad
 	.byte 0
+
+CinnabarIsland_PokemonLab_ExperimentRoom_OnLoad::
+	goto_if_set FLAG_MANSION_TALKED_WITH_INSANE_OLD_MAN, PokemonMansion_B1F_OnLoadEnd
+	hideobjectat LOCALID_EUGENE, 0
+CinnabarIsland_PokemonLab_ExperimentRoom_OnLoadEnd::
+	end
 
 CinnabarIsland_PokemonLab_ExperimentRoom_EventScript_Garett::
 	lock
